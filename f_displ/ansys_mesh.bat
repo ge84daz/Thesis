@@ -1,0 +1,1 @@
+"C:\Program Files\Ansys Inc\v181\ANSYS\bin\winx64\ansys181.exe" -p ansys -dir "H:\bm_itm\3 hs_cyl\f_displ\ansys_wd_T1" -j "Netz" -s noread -l en-us -np 16 -b -i "H:\bm_itm\3 hs_cyl\f_displ\FEmesh/FE_half_cyl.mac" -o "H:\bm_itm\3 hs_cyl\f_displ\ansys_wd_T1\output_ansys.out"

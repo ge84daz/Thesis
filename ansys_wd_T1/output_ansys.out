@@ -1,0 +1,644 @@
+
+ Ansys Mechanical Enterprise Academic Research     
+
+
+ *------------------------------------------------------------------*
+ |                                                                  |
+ |   W E L C O M E   T O   T H E   A N S Y S (R)  P R O G R A M     |
+ |                                                                  |
+ *------------------------------------------------------------------*
+
+
+
+
+ ***************************************************************
+ *         ANSYS MAPDL 2025 R1          LEGAL NOTICES          *
+ ***************************************************************
+ *                                                             *
+ * Copyright 1971-2025 Ansys, Inc.  All rights reserved.       *
+ * Unauthorized use, distribution or duplication is            *
+ * prohibited.                                                 *
+ *                                                             *
+ * Ansys is a registered trademark of Ansys, Inc. or its       *
+ * subsidiaries in the United States or other countries.       *
+ * See the Ansys, Inc. online documentation or the Ansys, Inc. *
+ * documentation CD or online help for the complete Legal      *
+ * Notice.                                                     *
+ *                                                             *
+ ***************************************************************
+ *                                                             *
+ * THIS ANSYS SOFTWARE PRODUCT AND PROGRAM DOCUMENTATION       *
+ * INCLUDE TRADE SECRETS AND CONFIDENTIAL AND PROPRIETARY      *
+ * PRODUCTS OF ANSYS, INC., ITS SUBSIDIARIES, OR LICENSORS.    *
+ * The software products and documentation are furnished by    *
+ * Ansys, Inc. or its subsidiaries under a software license    *
+ * agreement that contains provisions concerning               *
+ * non-disclosure, copying, length and nature of use,          *
+ * compliance with exporting laws, warranties, disclaimers,    *
+ * limitations of liability, and remedies, and other           *
+ * provisions.  The software products and documentation may be *
+ * used, disclosed, transferred, or copied only in accordance  *
+ * with the terms and conditions of that software license      *
+ * agreement.                                                  *
+ *                                                             *
+ * Ansys, Inc. is a UL registered                              *
+ * ISO 9001:2015 company.                                      *
+ *                                                             *
+ ***************************************************************
+ *                                                             *
+ * This product is subject to U.S. laws governing export and   *
+ * re-export.                                                  *
+ *                                                             *
+ * For U.S. Government users, except as specifically granted   *
+ * by the Ansys, Inc. software license agreement, the use,     *
+ * duplication, or disclosure by the United States Government  *
+ * is subject to restrictions stated in the Ansys, Inc.        *
+ * software license agreement and FAR 12.212 (for non-DOD      *
+ * licenses).                                                  *
+ *                                                             *
+ ***************************************************************
+
+ 2025 R1 
+     
+ Point Releases and Patches installed:   
+     
+ Ansys, Inc. License Manager 2025 R1 
+ Mechanical Products 2025 R1 
+ Core WB Files 2025 R1   
+
+
+          *****  MAPDL COMMAND LINE ARGUMENTS  *****
+  INITIAL JOBNAME              = Netz                                                                                                                                                                                                                                                    
+  BATCH MODE REQUESTED (-b)    = LIST
+  INPUT FILE COPY MODE (-c)    = COPY
+      24 PARALLEL PROCESSES REQUESTED WITH SINGLE THREAD PER PROCESS
+    TOTAL OF    24 CORES REQUESTED
+  INPUT FILE NAME              = H:\main_hs_cyl\FEmesh\FE_full_cyl.mac
+  OUTPUT FILE NAME             = H:\main_hs_cyl\ansys_wd_T1\output_ansys.out
+  START-UP FILE MODE           = NOREAD
+  STOP FILE MODE               = NOREAD
+  LANGUAGE                     = en-us               
+  INITIAL DIRECTORY = H:\main_hs_cyl\ansys_wd_T1
+
+ RELEASE= 2025 R1              BUILD= 25.1      UP20241202   VERSION=WINDOWS x64 
+ CURRENT JOBNAME=Netz0  14:39:55  JUL 03, 2025 CP=      0.156
+
+     1  fini
+     2  /clear  
+     3      
+     4  /INQUIRE,directory,DIRECTORY        !Save current working directory in stringarry   
+     5                                      !From Batch file working directory defined as ....\00_AOAD  
+     6      
+     7  dir=directory(1,1,1)                ! Create character variable with value of string arry   
+     8  ! dir='D:\diss_jf_mat\00_AOAD'  
+     9      
+    10  ! /CWD,'%dir%\Ansys_WD' !Define actual Working directory as \00_AOAD\Ansys_WD   
+    11  /CWD,'%dir%' !Define actual Working directory as \Ansys_wd  
+    12      
+    13  !********************************************************************   
+    14  ! Import variables  
+    15  !********************************************************************   
+    16      
+    17  !------------------------------------------------   
+    18  ! Makro 1: Radius of Cylinder and discretization
+    19  !------------------------------------------------   
+    20  PI = ACOS(-1)   
+    21      
+    22  *set,radius_input   
+    23  *dim,radius_input, array, 1 
+    24      
+    25  *create,macro1  
+    26  *VREAD,radius_input(1),'%dir%\radius_export',txt,,,0
+    27  (F10.0) 
+    28  *END
+    29  *USE,macro1 
+    30      
+    31  radius=radius_input(1)  
+    32      
+    33  ! Number of elements per half radius
+    34  *set,div_input  
+    35  *dim,div_input, array, 1
+    36      
+    37  *create,macro2  
+    38  *VREAD,div_input(1),'%dir%\div_export',txt,,,0  
+    39  (F10.0) 
+    40  *END
+    41  *USE,macro2 
+    42      
+    43  div=div_input(1)
+    44      
+    45  fak=1.0 
+    46      
+    47  !********************************************************************   
+    48  ! Preprosessing 
+    49  !********************************************************************   
+    50  !---------  
+    51  /prep7  
+    52  !---------  
+    53      
+    54  ! Keypoints 
+    55  K,1,0,0,0   
+    56  K,2,0,radius/2,0
+    57  K,3,0,0,radius/2
+    58  K,4,0,-radius/2,0   
+    59  K,5,0,0,-radius/2   
+    60  K,6,0,fak*radius/2,fak*radius/2 
+    61  K,7,0,-fak*radius/2,fak*radius/2
+    62  K,8,0,-fak*radius/2,-fak*radius/2   
+    63  K,9,0,fak*radius/2,-fak*radius/2
+    64      
+    65  K,10,1,0,0  
+    66      
+    67  CIRCLE,1,radius,10,2
+    68  lsel,all
+    69  LDIV,all,0.5, ,2,0  
+    70      
+    71  ! Areas 
+    72  A,12,3,6,15 
+    73  A,3,1,2,6   
+    74  A,15,6,2,11 
+    75  A,11,2,9,18 
+    76  A,2,1,5,9   
+    77  A,18,9,5,14 
+    78  A,14,5,8,17 
+    79  A,5,1,4,8   
+    80  A,17,8,4,13 
+    81  A,13,4,7,16 
+    82  A,4,1,3,7   
+    83  A,16,7,3,12 
+    84      
+    85      
+    86  ! Lines 
+    87  L,12,3,div  
+    88  L,3,1,div   
+    89  L,1,2,div   
+    90  L,2,11,div  
+    91  L,1,5,div   
+    92  L,5,14,div  
+    93  L,1,4,div   
+    94  L,4,13,div  
+    95      
+    96  ! Mesh  
+    97  ET,1,SHELL181   
+    98  MSHKEY,1
+    99  Asel,all
+   100  AMESH,all   
+   101      
+   102      
+   103  !--------------------------------------------------------------------   
+   104  ! Export Node and Element Lists 
+   105  !--------------------------------------------------------------------   
+   106      
+   107  ! Nodes 
+   108  *GET,NUM_NODE,NODE,0,COUNT  
+   109      
+   110  *create,macro3  
+   111  *CFOPEN,'%dir%\Knoten_import',dat   
+   112      
+   113  *DO,i,1,NUM_NODE,1  
+   114  *VWRITE,i,NX(i),NY(i),NZ(i) 
+   115  %4I %22G %22G %22G  
+   116  *ENDDO  
+   117      
+   118  *CFCLOS 
+   119  *END
+   120  *USE,macro3 
+   121      
+   122      
+   123  ! Elements  
+   124  *GET,NUM_ELEM,ELEM,0,COUNT  
+   125      
+   126  *create,macro4  
+   127  *CFOPEN,'%dir%\Elemente_import',dat 
+   128      
+   129  *DO,i,1,NUM_ELEM,1  
+   130  *VWRITE,i,NELEM(i,1),NELEM(i,2),NELEM(i,3),NELEM(i,4)   
+   131  %4I %22I %22I %22I %22I 
+   132  *ENDDO  
+   133      
+   134  *CFCLOS 
+   135  *END
+   136  *USE,macro4 
+
+ CLEAR DATABASE AND RERUN START.ANS
+
+ RUN SETUP PROCEDURE FROM FILE= C:\Program Files\ANSYS Inc\v251\ANSYS\apdl\start.ans
+
+ Ansys Mechanical Enterprise Academic Research     
+
+ /INPUT FILE= C:\Program Files\ANSYS Inc\v251\ANSYS\apdl\start.ans  LINE=       0
+
+ PARAMETER DIRECTORY = H:\main_hs_cyl\ansys_wd_T1
+
+ PARAMETER DIR = H:\main_hs_cyl\ansys_wd_T1      
+
+ Current working directory switched to H:\main_hs_cyl\ansys_wd_T1                                                                                                                                                                                                                              
+
+ PARAMETER PI =     3.141592654    
+
+ PARAMETER RADIUS_INPUT  DELETED.
+
+ SET PARAMETER DIMENSIONS ON  RADIUS_INPUT
+  TYPE=ARRA  DIMENSIONS=        1        1        1
+
+ START CREATE BY COPY FROM INPUT TO  macro1
+
+ END FILE CREATE
+
+ USE MACRO FILE  macro1
+
+ VECTOR READ OPERATION  *VREAD  
+  radius_i READ FROM FILE H:\main_hs_cyl\ansys_wd_T1\radius_export.txt
+ VECTOR LENGTH=      1
+ LOOP DIRECTIONS=IJK   COUNTS=       1       1       1
+ FORMAT=(F10.0)                                                               
+
+ PARAMETER RADIUS =     2.000000000    
+
+ PARAMETER DIV_INPUT  DELETED.
+
+ SET PARAMETER DIMENSIONS ON  DIV_INPUT
+  TYPE=ARRA  DIMENSIONS=        1        1        1
+
+ START CREATE BY COPY FROM INPUT TO  macro2
+
+ END FILE CREATE
+
+ USE MACRO FILE  macro2
+
+ VECTOR READ OPERATION  *VREAD  
+  div_inpu READ FROM FILE H:\main_hs_cyl\ansys_wd_T1\div_export.txt
+ VECTOR LENGTH=      1
+ LOOP DIRECTIONS=IJK   COUNTS=       1       1       1
+ FORMAT=(F10.0)                                                               
+
+ PARAMETER DIV =     4.000000000    
+
+ PARAMETER FAK =     1.000000000    
+
+ *** MAPDL - ENGINEERING ANALYSIS SYSTEM  RELEASE 2025 R1          25.1     ***
+ Ansys Mechanical Enterprise Academic Research     
+ 00226479  VERSION=WINDOWS x64   14:39:57  JUL 03, 2025 CP=      1.141
+
+                                                                               
+
+
+
+          ***** MAPDL ANALYSIS DEFINITION (PREP7) *****
+
+ KEYPOINT        1                  X,Y,Z=   0.00000       0.00000       0.00000      IN CSYS=        0
+
+ KEYPOINT        2                  X,Y,Z=   0.00000       1.00000       0.00000      IN CSYS=        0
+
+ KEYPOINT        3                  X,Y,Z=   0.00000       0.00000       1.00000      IN CSYS=        0
+
+ KEYPOINT        4                  X,Y,Z=   0.00000      -1.00000       0.00000      IN CSYS=        0
+
+ KEYPOINT        5                  X,Y,Z=   0.00000       0.00000      -1.00000      IN CSYS=        0
+
+ KEYPOINT        6                  X,Y,Z=   0.00000       1.00000       1.00000      IN CSYS=        0
+
+ KEYPOINT        7                  X,Y,Z=   0.00000      -1.00000       1.00000      IN CSYS=        0
+
+ KEYPOINT        8                  X,Y,Z=   0.00000      -1.00000      -1.00000      IN CSYS=        0
+
+ KEYPOINT        9                  X,Y,Z=   0.00000       1.00000      -1.00000      IN CSYS=        0
+
+ KEYPOINT       10                  X,Y,Z=   1.00000       0.00000       0.00000      IN CSYS=        0
+
+ CREATE CIRCLE CENTERED ON KEYPOINT      1  RADIUS =   2.000    
+      AXIS KEYPOINT =     10  X AXIS KEYPOINT =      2
+      ARC =   360.      NUMBER OF LINES =    4
+  LINE NO.=     1  KP1=     11  TAN1=    0.0000   0.0000  -1.0000
+                   KP2=     12  TAN2=    0.0000  -1.0000  -0.0000
+  LINE NO.=     2  KP1=     12  TAN1=    0.0000   1.0000   0.0000
+                   KP2=     13  TAN2=    0.0000   0.0000  -1.0000
+  LINE NO.=     3  KP1=     13  TAN1=    0.0000   0.0000   1.0000
+                   KP2=     14  TAN2=    0.0000   1.0000   0.0000
+  LINE NO.=     4  KP1=     14  TAN1=    0.0000  -1.0000   0.0000
+                   KP2=     11  TAN2=    0.0000  -0.0000   1.0000
+
+ ALL SELECT   FOR ITEM=LINE COMPONENT=    
+  IN RANGE         1 TO          4 STEP          1
+
+        4  LINES (OF        4  DEFINED) SELECTED BY LSEL COMMAND.
+
+ DIVIDE ALL SELECTED LINES RATIO=  0.50000    
+
+ NUMBER OF LINES DIVIDED =      4
+
+ DEFINE AREA BY LIST OF KEYPOINTS
+   KEYPOINT LIST =     12     3     6    15
+
+     AREA NUMBER =      1
+
+ DEFINE AREA BY LIST OF KEYPOINTS
+   KEYPOINT LIST =      3     1     2     6
+
+     AREA NUMBER =      2
+
+ DEFINE AREA BY LIST OF KEYPOINTS
+   KEYPOINT LIST =     15     6     2    11
+
+     AREA NUMBER =      3
+
+ DEFINE AREA BY LIST OF KEYPOINTS
+   KEYPOINT LIST =     11     2     9    18
+
+     AREA NUMBER =      4
+
+ DEFINE AREA BY LIST OF KEYPOINTS
+   KEYPOINT LIST =      2     1     5     9
+
+     AREA NUMBER =      5
+
+ DEFINE AREA BY LIST OF KEYPOINTS
+   KEYPOINT LIST =     18     9     5    14
+
+     AREA NUMBER =      6
+
+ DEFINE AREA BY LIST OF KEYPOINTS
+   KEYPOINT LIST =     14     5     8    17
+
+     AREA NUMBER =      7
+
+ DEFINE AREA BY LIST OF KEYPOINTS
+   KEYPOINT LIST =      5     1     4     8
+
+     AREA NUMBER =      8
+
+ DEFINE AREA BY LIST OF KEYPOINTS
+   KEYPOINT LIST =     17     8     4    13
+
+     AREA NUMBER =      9
+
+ DEFINE AREA BY LIST OF KEYPOINTS
+   KEYPOINT LIST =     13     4     7    16
+
+     AREA NUMBER =     10
+
+ DEFINE AREA BY LIST OF KEYPOINTS
+   KEYPOINT LIST =      4     1     3     7
+
+     AREA NUMBER =     11
+
+ DEFINE AREA BY LIST OF KEYPOINTS
+   KEYPOINT LIST =     16     7     3    12
+
+     AREA NUMBER =     12
+
+ LINE CONNECTS KEYPOINTS     12     3  DIVISIONS=     4  SPACING=   1.00
+  LINE NO.=     9  KP1=     12  TAN1=    0.0000   0.0000   1.0000
+                   KP2=      3  TAN2=    0.0000   0.0000  -1.0000
+
+ LINE CONNECTS KEYPOINTS      3     1  DIVISIONS=     4  SPACING=   1.00
+  LINE NO.=    12  KP1=      3  TAN1=    0.0000   0.0000   1.0000
+                   KP2=      1  TAN2=    0.0000   0.0000  -1.0000
+
+ LINE CONNECTS KEYPOINTS      1     2  DIVISIONS=     4  SPACING=   1.00
+  LINE NO.=    13  KP1=      1  TAN1=    0.0000  -1.0000   0.0000
+                   KP2=      2  TAN2=    0.0000   1.0000   0.0000
+
+ LINE CONNECTS KEYPOINTS      2    11  DIVISIONS=     4  SPACING=   1.00
+  LINE NO.=    15  KP1=      2  TAN1=    0.0000  -1.0000   0.0000
+                   KP2=     11  TAN2=    0.0000   1.0000   0.0000
+
+ LINE CONNECTS KEYPOINTS      1     5  DIVISIONS=     4  SPACING=   1.00
+  LINE NO.=    18  KP1=      1  TAN1=    0.0000   0.0000   1.0000
+                   KP2=      5  TAN2=    0.0000   0.0000  -1.0000
+
+ LINE CONNECTS KEYPOINTS      5    14  DIVISIONS=     4  SPACING=   1.00
+  LINE NO.=    20  KP1=      5  TAN1=    0.0000   0.0000   1.0000
+                   KP2=     14  TAN2=    0.0000   0.0000  -1.0000
+
+ LINE CONNECTS KEYPOINTS      1     4  DIVISIONS=     4  SPACING=   1.00
+  LINE NO.=    23  KP1=      1  TAN1=    0.0000   1.0000   0.0000
+                   KP2=      4  TAN2=    0.0000  -1.0000   0.0000
+
+ LINE CONNECTS KEYPOINTS      4    13  DIVISIONS=     4  SPACING=   1.00
+  LINE NO.=    25  KP1=      4  TAN1=    0.0000   1.0000   0.0000
+                   KP2=     13  TAN2=    0.0000  -1.0000   0.0000
+
+ ELEMENT TYPE          1 IS SHELL181     4-NODE SHELL                
+  KEYOPT( 1- 6)=        0      0      0        0      0      0
+  KEYOPT( 7-12)=        0      0      0        0      0      0
+  KEYOPT(13-18)=        0      0      0        0      0      0
+
+ CURRENT NODAL DOF SET IS  UX    UY    UZ    ROTX  ROTY  ROTZ
+  THREE-DIMENSIONAL MODEL
+ USE THE MAPPED MESHER.
+
+ ALL SELECT   FOR ITEM=AREA COMPONENT=    
+  IN RANGE         1 TO         12 STEP          1
+
+       12  AREAS (OF       12  DEFINED) SELECTED BY ASEL COMMAND.
+
+ GENERATE NODES AND ELEMENTS   IN  ALL  SELECTED AREAS    
+    ** AREA     1 MESHED WITH      16 QUADRILATERALS,        0 TRIANGLES **
+    ** AREA     2 MESHED WITH      16 QUADRILATERALS,        0 TRIANGLES **
+    ** AREA     3 MESHED WITH      16 QUADRILATERALS,        0 TRIANGLES **
+    ** AREA     4 MESHED WITH      16 QUADRILATERALS,        0 TRIANGLES **
+    ** AREA     5 MESHED WITH      16 QUADRILATERALS,        0 TRIANGLES **
+    ** AREA     6 MESHED WITH      16 QUADRILATERALS,        0 TRIANGLES **
+    ** AREA     7 MESHED WITH      16 QUADRILATERALS,        0 TRIANGLES **
+    ** AREA     8 MESHED WITH      16 QUADRILATERALS,        0 TRIANGLES **
+    ** AREA     9 MESHED WITH      16 QUADRILATERALS,        0 TRIANGLES **
+    ** AREA    10 MESHED WITH      16 QUADRILATERALS,        0 TRIANGLES **
+    ** AREA    11 MESHED WITH      16 QUADRILATERALS,        0 TRIANGLES **
+    ** AREA    12 MESHED WITH      16 QUADRILATERALS,        0 TRIANGLES **
+
+ NUMBER OF AREAS MESHED     =         12
+ MAXIMUM NODE NUMBER        =        209
+ MAXIMUM ELEMENT NUMBER     =        192
+
+ *GET  NUM_NODE  FROM  NODE  ITEM=COUN       VALUE=  209.000000     
+
+ START CREATE BY COPY FROM INPUT TO  macro3
+
+ END FILE CREATE
+
+ USE MACRO FILE  macro3
+
+ OPENED FILE= H:\main_hs_cyl\ansys_wd_T1\Knoten_import.dat FOR COMMAND FILE DATA 
+
+
+ *DO LOOP ON PARAMETER= I FROM  1.0000     TO  209.00     BY  1.0000    
+
+ *ENDDO  INDEX= I                               
+
+  COMMAND FILE CLOSED 
+
+
+ *GET  NUM_ELEM  FROM  ELEM  ITEM=COUN           VALUE=  192.000000    
+
+ START CREATE BY COPY FROM INPUT TO  macro4
+
+ END FILE CREATE
+
+ USE MACRO FILE  macro4
+
+ OPENED FILE= H:\main_hs_cyl\ansys_wd_T1\Elemente_import.dat FOR COMMAND FILE DATA 
+
+
+ *DO LOOP ON PARAMETER= I FROM  1.0000     TO  192.00     BY  1.0000    
+
+ *ENDDO  INDEX= I                               
+
+  COMMAND FILE CLOSED 
+
+
+ ***** END OF INPUT ENCOUNTERED *****
+
+
+ NUMBER OF WARNING MESSAGES ENCOUNTERED=          0
+ NUMBER OF ERROR   MESSAGES ENCOUNTERED=          0
+
+
+
+ ***** PROBLEM TERMINATED BY INDICATED ERROR(S) OR BY END OF INPUT DATA *****
+
++--------------------- M A P D L   S T A T I S T I C S ------------------------+
+
+Release: 2025 R1            Build: 25.1       Update: UP20241202   Platform: WINDOWS x64 
+Date Run: 07/03/2025   Time: 14:39     Process ID: 17396
+Operating System: Windows Server 2022  (Build: 20348)
+
+Processor Model: Intel(R) Xeon(R) Gold 6136 CPU @ 3.00GHz
+
+Compiler: Intel(R) Fortran Compiler Classic Version 2021.9  (Build: 20230302)
+          Intel(R) C/C++ Compiler Classic Version 2021.9  (Build: 20230302)
+          Intel(R) oneAPI Math Kernel Library Version 2023.1-Product Build 20230303
+
+Number of machines requested            :    1
+Total number of cores available         :   48
+Number of physical cores available      :   24
+Number of processes requested           :   24
+Number of threads per process requested :    1
+Total number of cores requested         :   24 (Distributed Memory Parallel)               
+MPI Type: INTELMPI
+MPI Version: Intel(R) MPI Library 2021.13 for Windows* OS
+
+
+GPU Acceleration: Not Requested
+
+Job Name: Netz0
+Input File: H:\main_hs_cyl\FEmesh/FE_full_cyl.mac
+
+  Core                Machine Name   Working Directory
+ -----------------------------------------------------
+     0               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+     1               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+     2               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+     3               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+     4               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+     5               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+     6               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+     7               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+     8               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+     9               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+    10               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+    11               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+    12               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+    13               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+    14               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+    15               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+    16               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+    17               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+    18               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+    19               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+    20               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+    21               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+    22               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+    23               TUBVBMA-RSV09   H:\main_hs_cyl\ansys_wd_T1
+ 
+Latency time from master to core     1 =    4.614 microseconds
+Latency time from master to core     2 =    4.601 microseconds
+Latency time from master to core     3 =    4.585 microseconds
+Latency time from master to core     4 =    4.569 microseconds
+Latency time from master to core     5 =    4.609 microseconds
+Latency time from master to core     6 =    4.573 microseconds
+Latency time from master to core     7 =    4.713 microseconds
+Latency time from master to core     8 =    4.578 microseconds
+Latency time from master to core     9 =    4.634 microseconds
+Latency time from master to core    10 =    4.609 microseconds
+Latency time from master to core    11 =    4.573 microseconds
+Latency time from master to core    12 =    4.813 microseconds
+Latency time from master to core    13 =    4.936 microseconds
+Latency time from master to core    14 =    4.784 microseconds
+Latency time from master to core    15 =    4.817 microseconds
+Latency time from master to core    16 =    4.819 microseconds
+Latency time from master to core    17 =    4.750 microseconds
+Latency time from master to core    18 =    4.752 microseconds
+Latency time from master to core    19 =    4.782 microseconds
+Latency time from master to core    20 =    4.663 microseconds
+Latency time from master to core    21 =    4.773 microseconds
+Latency time from master to core    22 =    4.710 microseconds
+Latency time from master to core    23 =    4.725 microseconds
+ 
+Communication speed from master to core     1 =  6589.62 MB/sec
+Communication speed from master to core     2 =  6933.49 MB/sec
+Communication speed from master to core     3 =  6996.25 MB/sec
+Communication speed from master to core     4 =  7196.38 MB/sec
+Communication speed from master to core     5 =  7090.31 MB/sec
+Communication speed from master to core     6 =  7016.56 MB/sec
+Communication speed from master to core     7 =  6915.69 MB/sec
+Communication speed from master to core     8 =  6798.73 MB/sec
+Communication speed from master to core     9 =  7077.02 MB/sec
+Communication speed from master to core    10 =  7072.70 MB/sec
+Communication speed from master to core    11 =  7064.08 MB/sec
+Communication speed from master to core    12 =  4287.50 MB/sec
+Communication speed from master to core    13 =  4315.46 MB/sec
+Communication speed from master to core    14 =  4364.67 MB/sec
+Communication speed from master to core    15 =  4287.73 MB/sec
+Communication speed from master to core    16 =  4302.93 MB/sec
+Communication speed from master to core    17 =  4350.76 MB/sec
+Communication speed from master to core    18 =  4372.99 MB/sec
+Communication speed from master to core    19 =  4333.67 MB/sec
+Communication speed from master to core    20 =  4376.15 MB/sec
+Communication speed from master to core    21 =  4338.79 MB/sec
+Communication speed from master to core    22 =  4320.26 MB/sec
+Communication speed from master to core    23 =  4335.97 MB/sec
+
+Total CPU time for main thread                    :        1.5 seconds
+Total CPU time summed for all threads             :        1.3 seconds
+
+Elapsed time spent obtaining a license            :        2.4 seconds
+Elapsed time spent pre-processing model (/PREP7)  :        0.0 seconds
+Elapsed time spent solution - preprocessing       :        0.0 seconds
+Elapsed time spent computing solution             :        0.0 seconds
+Elapsed time spent solution - postprocessing      :        0.0 seconds
+Elapsed time spent post-processing model (/POST1) :        0.0 seconds
+ 
+
+Sum of disk space used on all processes           :        0.0 MB
+
+Sum of memory used on all processes               :      144.0 MB
+Sum of memory allocated on all processes          :     6720.0 MB
+Physical memory available                         :        256 GB
+Total amount of I/O written to disk               :        0.0 GB
+Total amount of I/O read from disk                :        0.0 GB
+
++------------------ E N D   M A P D L   S T A T I S T I C S -------------------+
+
+
+ *-----------------------------------------------------------------------------*
+ |                                                                             |
+ |                               RUN COMPLETED                                 |
+ |                                                                             |
+ |-----------------------------------------------------------------------------|
+ |                                                                             |
+ |  Ansys MAPDL 2025 R1         Build 25.1         UP20241202    WINDOWS x64   |
+ |                                                                             |
+ |-----------------------------------------------------------------------------|
+ |                                                                             |
+ |  Database Requested(-db)     1024 MB     Scratch Memory Requested   1024 MB |
+ |  Max Database Used(Master)      1 MB     Max Scratch Used(Master)      5 MB |
+ |  Max Database Used(Workers)     1 MB     Max Scratch Used(Workers)     5 MB |
+ |  Sum Database Used(All)        24 MB     Sum Scratch Used(All)       120 MB |
+ |                                                                             |
+ |-----------------------------------------------------------------------------|
+ |                                                                             |
+ |        CP Time      (sec) =          1.266       Time  =  14:39:58          |
+ |        Elapsed Time (sec) =          6.000       Date  =  07/03/2025        |
+ |                                                                             |
+ *-----------------------------------------------------------------------------*

@@ -1,0 +1,8 @@
+*CFOPEN,'%dir%\Elemente_import',dat
+        
+*DO,i,1,NUM_ELEM,1
+*VWRITE,i,NELEM(i,1),NELEM(i,2),NELEM(i,3),NELEM(i,4)
+%4I %22I %22I %22I %22I
+*ENDDO
+        
+*CFCLOS

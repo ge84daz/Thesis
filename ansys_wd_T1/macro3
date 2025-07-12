@@ -1,0 +1,8 @@
+*CFOPEN,'%dir%\Knoten_import',dat
+        
+*DO,i,1,NUM_NODE,1
+*VWRITE,i,NX(i),NY(i),NZ(i)
+%4I %22G %22G %22G
+*ENDDO
+        
+*CFCLOS
