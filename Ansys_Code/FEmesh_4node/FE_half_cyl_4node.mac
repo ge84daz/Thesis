@@ -1,0 +1,133 @@
+fini
+/clear
+
+/INQUIRE,directory,DIRECTORY        !Save current working directory in stringarry
+                                    !From Batch file working directory defined as ....\00_AOAD
+
+dir=directory(1,1,1)                ! Create character variable with value of string arry
+! dir='D:\diss_jf_mat\00_AOAD'
+
+! /CWD,'%dir%\Ansys_WD' !Define actual Working directory as \00_AOAD\Ansys_WD
+/CWD,'%dir%' !Define actual Working directory as \Ansys_wd
+
+!********************************************************************
+! Import variables 
+!********************************************************************
+
+!------------------------------------------------
+! Makro 1: Radius of Cylinder and discretization
+!------------------------------------------------
+PI = ACOS(-1)
+
+!Getting radius 
+*set,radius_input
+*dim,radius_input, array, 1
+
+*create,macro1
+*VREAD,radius_input(1),'%dir%\radius_export',txt,,,0
+(F10.0)
+*END
+*USE,macro1
+
+radius=radius_input(1)
+
+!Getting number of divisions of Radius/2
+*set,div_input
+*dim,div_input, array, 1
+
+*create,macro2
+*VREAD,div_input(1),'%dir%\div_export',txt,,,0
+(F10.0)
+*END
+*USE,macro2
+
+div=div_input(1)
+
+!********************************************************************
+! Preprosessing
+!********************************************************************
+!---------
+/prep7 
+!---------
+
+! Keypoints
+K,1,0,0,0
+K,2,0,radius/2,0
+K,3,0,0,radius/2
+K,4,0,-radius/2,0
+K,5,0,radius/2,radius/2
+K,6,0,-radius/2,radius/2
+
+K,7,1,0,0
+
+!Defining Halfcirlelines
+CIRCLE,1,radius,7,2,-180
+lsel,all
+LDIV,all,0.5, ,2,0
+
+!Startpoint and direction of rotation for areas are the same as in Elementdefinition
+!All areas have starting point on the right upper edge and turn anti-clockwise
+
+!Defining Areas
+A,2,8,11,5
+A,1,2,5,3
+A,3,5,11,9
+
+A,4,1,3,6
+A,10,4,6,12
+A,6,3,9,12
+
+
+!Dividing Lines
+L,1,3,div
+L,3,9,div
+L,1,2,div
+L,2,8,div
+L,1,4,div
+L,4,10,div
+
+
+
+!Meshing Halfcircle with shellelements
+ET,1,SHELL181
+MSHKEY,1
+Asel,all
+AMESH,all
+
+!--------------------------------------------------------------------
+! Export Node and Element Lists
+!--------------------------------------------------------------------
+
+! Nodes
+*GET,NUM_NODE,NODE,0,COUNT
+
+*create,macro3
+*CFOPEN,'%dir%\Knoten_import',dat
+
+*DO,i,1,NUM_NODE,1
+*VWRITE,i,NX(i),NY(i),NZ(i)
+%4I %22F %22F %22F
+*ENDDO
+
+*CFCLOS
+*END
+*USE,macro3
+
+
+! Elements
+*GET,NUM_ELEM,ELEM,0,COUNT
+
+*create,macro4
+*CFOPEN,'%dir%\Elemente_import',dat
+
+*DO,i,1,NUM_ELEM,1
+*VWRITE,i,NELEM(i,1),NELEM(i,2),NELEM(i,3),NELEM(i,4)
+%4I %22I %22I %22I %22I
+*ENDDO
+
+*CFCLOS
+*END
+*USE,macro4
+
+
+
