@@ -1,0 +1,98 @@
+
+\documentclass[ 
+   12pt,                  % Schriftgroesse 12pt
+   a4paper,               % Layout fuer Din A4
+   twoside,               % Layout fuer beidseitigen Druck
+   headinclude,           % Kopfzeile wird Seiten-Layouts mit beruecksichtigt
+   headsepline,           % horizontale Linie unter Kolumnentitel
+   plainheadsepline,      % horizontale Linie auch beim plain-Style
+   BCOR=12mm,             % Korrektur fuer die Bindung
+   DIV=18,                % DIV-Wert fuer die Erstellung des Satzspiegels, siehe scrguide
+   parskip=half,          % Absatzabstand statt Absatzeinzug
+   openany,               % Kapitel können auf geraden und ungeraden Seiten beginnen
+   bibliography=totoc,    % Literaturverz. wird ins Inhaltsverzeichnis eingetragen
+   toc=listof,            % Abbildungs- Tabellen- und sonstige verzeichnisse mit ins INhaltsverz.
+   numbers=noenddot,      % Kapitelnummern immer ohne Punkt
+   captions=tableheading, % korrekte Abstaende bei TabellenUEBERschriften
+   fleqn,                 % fleqn: Gleichungen links (statt mittig)
+   % draft                % Keine Bilder in der Anzeige, overfull hboxes werden angezeigt
+   % To be edited by the author:
+   % german,              % deutsche Sprache, global
+   % bmcolorlinks,
+   % bmshowlabels
+   % mpinclude,           % mehr Platz für Randnotzzen
+      ]{bmvorlagen/bmthesis}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Packages/Settings
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[utf8]{inputenc}  					 % Input-Encodung: ansinew fuer Windows
+\usepackage[T1]{fontenc}
+%\usepackage[latin1]{inputenc}    				 % Input-Encodung: latin1 fuer Unix
+\newcommand{\bmtitle}{Musterthesis ...}
+\newcommand{\bmauthor}{B.Sc. ...}
+\newcommand{\bmkeywords}{Thesis, Example}
+\newcommand{\bmstartpage}{5}
+\graphicspath{{bilder/}{bilder_svg/}{plots/}}    % Falls texinput nicht gesetzt -> Bildverzeichnisse
+\hyphenation{Post-pro-cess-ing--In-te-gral}
+\raggedbottom
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Setting for new version of svg-Package
+% to handle file names as the old one did
+% fixing a bug
+% date 04.11.2019
+\makeatletter
+\def\set@curr@file#1{\def\@curr@file{#1}}
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Dokument an sich
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Wenn man nur ein kapitel übersetzten möchte, da reinschreiben
+%\includeonly{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+\begin{document}
+\frontmatter
+\pagenumbering{Roman}
+
+\include{deck}                % Deckblatt
+\cleardoubleemptypage 
+\include{abstract}            % Abstract der Arbeit
+\include{erkl}
+\cleardoubleemptypage         % Das Inhaltsverzeichnis auf einer rechten Seite beginnen
+
+\begin{spacing}{1.0}          % Verzeichnisse werden mit einzeiligem Abstand gesetzt
+ \tableofcontents             % Inhaltsverzeichnis
+% \addcontentsline{toc}{chapter}{Abbildungsverzeichnis} so kann man von hand was in Inhaltsverzeichnis schreiben
+ \listoffigures              % Abbildungsverzeichnis
+% \listoftables               % Tabellenverzeichnis
+% \lstlistoflistings          % Verzeichnis der Listings
+\end{spacing}
+
+\include{symbole}             % Symbolverzeichnis 
+
+\cleardoubleplainpage         % Das erste Kapitel des Hauptteils auf einer rechten Seite beginnen
+
+\mainmatter                   % den Hauptteil beginnen
+\include{einleit}             % Einleitung
+\include{kapitel1}
+
+\appendix                     % Anhang
+ \include{anhang}    
+
+\backmatter
+\begin{spacing}{1.0}          % Verzeichnisse werden mit einzeiligem Abstand gesetzt
+\inputencoding{latin2}
+ \bibliography{main_musterthesis}
+\inputencoding{utf8}
+\end{spacing}
+
+\end{document}
+
