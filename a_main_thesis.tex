@@ -1,0 +1,134 @@
+
+\documentclass[ 
+   12pt,                  % Schriftgroesse 12pt
+   a4paper,               % Layout fuer Din A4
+   twoside,               % Layout fuer beidseitigen Druck
+   headinclude,           % Kopfzeile wird Seiten-Layouts mit beruecksichtigt
+   headsepline,           % horizontale Linie unter Kolumnentitel
+   plainheadsepline,      % horizontale Linie auch beim plain-Style
+   BCOR=12mm,             % Korrektur fuer die Bindung
+   DIV=18,                % DIV-Wert fuer die Erstellung des Satzspiegels, siehe scrguide
+   parskip=half,          % Absatzabstand statt Absatzeinzug
+   openany,               % Kapitel können auf geraden und ungeraden Seiten beginnen
+   bibliography=totoc,    % Literaturverz. wird ins Inhaltsverzeichnis eingetragen
+   toc=listof,            % Abbildungs- Tabellen- und sonstige verzeichnisse mit ins INhaltsverz.
+   numbers=noenddot,      % Kapitelnummern immer ohne Punkt
+   captions=tableheading, % korrekte Abstaende bei TabellenUEBERschriften
+   fleqn,                 % fleqn: Gleichungen links (statt mittig)
+   % draft                % Keine Bilder in der Anzeige, overfull hboxes werden angezeigt
+   % To be edited by the author:
+   % german,              % deutsche Sprache, global
+   % bmcolorlinks,
+   % bmshowlabels
+   % mpinclude,           % mehr Platz für Randnotzzen
+      ]{bmvorlagen/bmthesis}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Packages/Settings
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[utf8]{inputenc}  					 % Input-Encodung: ansinew fuer Windows
+\usepackage{amsmath}
+\usepackage[ngerman]{babel}  % für deutsche Sprache; von A eingefügt
+\usepackage[T1]{fontenc}
+
+% --- svg Dateien ---
+\usepackage{svg}          % braucht Inkscape
+\svgpath{{Bilder_svg/}}   % Suchpfad(n)
+
+
+% --- Bibliographie ---
+\usepackage[backend=biber, style=numeric]{biblatex}
+\addbibresource{Literaturverzeichnis.bib}  % deine Bib-Datei ohne Pfad und Endung
+
+
+
+
+
+%\usepackage[backend=biber,style=ieee]{biblatex}
+%\addbibresource{Literaturverzeichnis.bib}  % Jabref referenz hier!!!
+%\usepackage[latin1]{inputenc}    				 % Input-Encodung: latin1 fuer Unix
+\newcommand{\bmtitle}{Implementierung eines dreieckigen FE-Netzes im Rahmen eines gekoppelten ITM-FEM-Ansatzes für die Untersuchung eines homogenen Halbraum mit zylindrischem Hohlraum}
+\newcommand{\bmauthor}{Anton Bönisch}
+\newcommand{\bmkeywords}{Thesis, Example}
+\newcommand{\bmstartpage}{5}
+\graphicspath{{bilder/}{bilder_svg/}{plots/}}    % Falls texinput nicht gesetzt -> Bildverzeichnisse
+\hyphenation{Post-pro-cess-ing--In-te-gral}
+\raggedbottom
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Setting for new version of svg-Package
+% to handle file names as the old one did
+% fixing a bug
+% date 04.11.2019
+\makeatletter
+\def\set@curr@file#1{\def\@curr@file{#1}}
+\makeatother
+\usepackage{tikz}
+\newcommand{\ftmap}{%
+	\tikz[baseline=-0.5ex]{
+		\draw[semithick] (0,0) circle(0.7ex);
+		\draw[semithick] (0,0) -- (1.8em,0);
+		\fill (1.8em,0) circle(0.7ex);
+	}%
+}
+\usepackage{trfsigns}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Dokument an sich
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Wenn man nur ein kapitel übersetzten möchte, da reinschreiben
+%\includeonly{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+\begin{document}
+\frontmatter
+\pagenumbering{Roman}
+
+\include{deck}                % Deckblatt
+\cleardoubleemptypage 
+\include{abstract}            % Abstract der Arbeit
+\include{erkl}
+\cleardoubleemptypage         % Das Inhaltsverzeichnis auf einer rechten Seite beginnen
+
+\begin{spacing}{1.0}          % Verzeichnisse werden mit einzeiligem Abstand gesetzt
+ \tableofcontents             % Inhaltsverzeichnis
+% \addcontentsline{toc}{chapter}{Abbildungsverzeichnis} so kann man von hand was in Inhaltsverzeichnis schreiben
+ \listoffigures              % Abbildungsverzeichnis
+% \listoftables               % Tabellenverzeichnis
+% \lstlistoflistings          % Verzeichnis der Listings
+\end{spacing}
+
+\include{symbole}             % Symbolverzeichnis 
+
+\cleardoubleplainpage         % Das erste Kapitel des Hauptteils auf einer rechten Seite beginnen
+
+\mainmatter                   % den Hauptteil beginnen
+\include{einleit}             % Einleitung
+\include{kapitel1}
+
+\include{chapITM}		%my first chapter
+\include{Grundgleichungen}
+\include{ITM}
+\appendix                     % Anhang
+ \include{anhang}    
+
+\backmatter
+%\begin{spacing}{1.0}          % Verzeichnisse werden mit einzeiligem Abstand gesetzt
+%\bibliographystyle{apalike}   % oder abbrv, alpha, plainnat, unsrt, ...
+% \bibliography{Literaturverzeichnis} % ohne .bib-Endung
+\printbibliography
+%\begin{spacing}{1.0}          % Verzeichnisse werden mit einzeiligem Abstand gesetzt
+	%\inputencoding{plain}
+	%\bibliography{a_main_thesis}
+%	\inputencoding{utf8}
+%\end{spacing}
+%\end{spacing}
+
+\end{document}
+
