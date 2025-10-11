@@ -1,4 +1,3 @@
-
 \documentclass[ 
    12pt,                  % Schriftgroesse 12pt
    a4paper,               % Layout fuer Din A4
@@ -34,14 +33,34 @@
 \usepackage[T1]{fontenc}
 
 % --- svg Dateien ---
-\usepackage{svg}          % braucht Inkscape
-\svgpath{{Bilder_svg/}}   % Suchpfad(n)
+%\usepackage{svg}          % braucht Inkscape
+%\svgpath{{Bilder_svg/}}   % Suchpfad(n)
+%\graphicspath{{bilder/}{bilder_svg/}{plots/}}    % Falls texinput nicht gesetzt -> Bildverzeichnisse
+\usepackage{svg}
+\usepackage{subcaption}
 
+
+\usepackage{array,longtable}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+% --- Mac: Pfad zu Inkscape setzen ---
+% Variante A: Inkscape aus der .app (meist richtig)
+\svgsetup{
+	inkscapeexe = {/Applications/Inkscape.app/Contents/MacOS/inkscape},
+	inkscapelatex = true % Text via LaTeX setzen (empfohlen)
+}
+
+% (optional) Variante B: Homebrew-Installation
+% \svgsetup{inkscapeexe = {/opt/homebrew/bin/inkscape}, inkscapelatex=true} % Apple Silicon
+% \svgsetup{inkscapeexe = {/usr/local/bin/inkscape},  inkscapelatex=true}   % Intel-Macs
+
+% Suchpfad(e) für deine SVGs (passt zu deiner Struktur)
+\svgpath{{svg/}}
 
 % --- Bibliographie ---
-\usepackage[backend=biber, style=numeric]{biblatex}
-\addbibresource{Literaturverzeichnis.bib}  % deine Bib-Datei ohne Pfad und Endung
-
+%\usepackage[backend=biber, style=numeric]{biblatex}
+%\addbibresource{Literaturverzeichnis.bib}  % deine Bib-Datei ohne Pfad und Endung
+%\usepackage[backend=biber,style=ieee]{biblatex}
+%\addbibresource{Literaturverzeichnis.bib}  % Jabref referenz hier!!!
 
 
 
@@ -49,7 +68,7 @@
 %\usepackage[backend=biber,style=ieee]{biblatex}
 %\addbibresource{Literaturverzeichnis.bib}  % Jabref referenz hier!!!
 %\usepackage[latin1]{inputenc}    				 % Input-Encodung: latin1 fuer Unix
-\newcommand{\bmtitle}{Implementierung eines dreieckigen FE-Netzes im Rahmen eines gekoppelten ITM-FEM-Ansatzes für die Untersuchung eines homogenen Halbraum mit zylindrischem Hohlraum}
+\newcommand{\bmtitle}{Implementierung eines triangulären FE-Netzes im ITM-FEM-Ansatz zur Untersuchung eines homogenen Halbraums mit zylindrischem Hohlraum}
 \newcommand{\bmauthor}{Anton Bönisch}
 \newcommand{\bmkeywords}{Thesis, Example}
 \newcommand{\bmstartpage}{5}
@@ -85,7 +104,6 @@
 
 
 
-
 \begin{document}
 \frontmatter
 \pagenumbering{Roman}
@@ -100,35 +118,46 @@
  \tableofcontents             % Inhaltsverzeichnis
 % \addcontentsline{toc}{chapter}{Abbildungsverzeichnis} so kann man von hand was in Inhaltsverzeichnis schreiben
  \listoffigures              % Abbildungsverzeichnis
-% \listoftables               % Tabellenverzeichnis
-% \lstlistoflistings          % Verzeichnis der Listings
+ \listoftables               % Tabellenverzeichnis
+ \lstlistoflistings          % Verzeichnis der Listings
 \end{spacing}
 
-\include{symbole}             % Symbolverzeichnis 
+\include{symbole}             % Symbolverzeichnis  nur temporär ausgeblendet von Anton
 
 \cleardoubleplainpage         % Das erste Kapitel des Hauptteils auf einer rechten Seite beginnen
 
 \mainmatter                   % den Hauptteil beginnen
 \include{einleit}             % Einleitung
-\include{kapitel1}
+%\include{kapitel1}
 
-\include{chapITM}		%my first chapter
+
 \include{Grundgleichungen}
 \include{ITM}
+\include{FEM}
+\include{Kopplung}
+
+
 \appendix                     % Anhang
  \include{anhang}    
 
-\backmatter
+%\backmatter
 %\begin{spacing}{1.0}          % Verzeichnisse werden mit einzeiligem Abstand gesetzt
 %\bibliographystyle{apalike}   % oder abbrv, alpha, plainnat, unsrt, ...
 % \bibliography{Literaturverzeichnis} % ohne .bib-Endung
-\printbibliography
+%\printbibliography
 %\begin{spacing}{1.0}          % Verzeichnisse werden mit einzeiligem Abstand gesetzt
-	%\inputencoding{plain}
-	%\bibliography{a_main_thesis}
+	%\inputencoding{latin2}
+	%\bibliography{Literaturverzeichnis}
+	%\inputencoding{utf8}
+%\end{spacing}
+%\end{spacing}
+\backmatter
+\begin{spacing}{1.0}          % Verzeichnisse werden mit einzeiligem Abstand gesetzt
+%	\inputencoding{latin2}
+	\bibliography{Literaturverzeichnis}
+
 %	\inputencoding{utf8}
-%\end{spacing}
-%\end{spacing}
+\end{spacing}
 
 \end{document}
 

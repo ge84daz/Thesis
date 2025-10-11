@@ -1,0 +1,319 @@
+\chapter{Integraltransformationsmethode}
+\label{cha:ITM}
+
+
+\section{Vorbemerkung}
+\label{sec:Vorbemerkung_ITM}
+
+Um die unendliche Ausdehnung des Bodens und die in Kapitel (\ref{cha:Grundgleichungen}) beschriebenen elastischen Wellen analytisch zu berechnen, ist die Integraltransformationsmethode (ITM) eine geeignete Berechnungsmethode \citep{Mueller2007}.
+
+Da die ITM allerdings nur einfache Geometrien beschreiben kann, müssen komplexere Strukturen durch eine Überlagerung von Fundamentalsystemen abgebildet werden. 
+
+In der vorliegenden Arbeit wird ein Tunnel im ungeschichteten Boden untersucht.
+Für diese geometrische Situation liegt keine Lösung vor, sodass für die Berechnung die Fundamentalsysteme Halbraum und Vollraum mit zylindrischem Hohlraum in den Kapiteln (\ref{sec:Halbraum}) und (\ref{sec:Zylinder}) herangezogen werden.
+Im darauffolgenden Kapitel (\ref{sec:Superposition}) werden die Fundamentalsysteme überlagert, um so eine analytische Lösung für die untersuchte geometrische Situation zu erhalten.
+
+Zu beachten ist, dass die in den Kapiteln (\ref{sec:Halbraum}) und (\ref{sec:Zylinder}) beschriebenen Lösungen eine dynamische Belastung  (\(\omega \neq 0\)) voraussetzen. Aufgrund der gewählten Lösungsmethoden ist eine statische Belastung nicht zulässig \citep{Fruehe2010}.
+
+\section{Fundamentalsystem Halbraum}
+\label{sec:Halbraum}
+
+\begin{figure}[H]
+	\hspace*{45mm}
+%	\centering
+	\includesvg[height=4.5cm,keepaspectratio]{svg/cha_02_svg_01_hs}
+	\caption{Fundamentalsystem homogener Halbraum - basiert auf \citep{Freisinger2022}}
+	\label{fig:cha09_hs}
+\end{figure}
+Wie \cite{Fruehe2010} beschreibt, werden die im Kapitel (\ref{sec:Helmholtz}) hergeleiteten Potentiale $\Phi$ und $\Psi_{i}$ für den Halbraum in kartesischen Koordinaten \((x^1 = x,\ x^2 = y,\ x^3 = z)\) beschrieben. Dadurch ergibt sich ein System entkoppelter partieller Differentialgleichungen zu:
+\begin{subequations}\label{eq:partielle_DGL}
+		\begin{align}
+			&\left[\frac{\partial^{2}}{\partial x^{2}}
+			+ \frac{\partial^{2}}{\partial y^{2}}
+			+ \frac{\partial^{2}}{\partial z^{2}}
+			- \frac{1}{c_p^{2}}\,\frac{\partial^{2}}{\partial t^{2}}\right]
+			\Phi(x,y,z,t) = 0
+			\label{eq:phi_wave} \\[6pt]
+			&\left[\frac{\partial^{2}}{\partial x^{2}}
+			+ \frac{\partial^{2}}{\partial y^{2}}
+			+ \frac{\partial^{2}}{\partial z^{2}}
+			- \frac{1}{c_s^{2}}\,\frac{\partial^{2}}{\partial t^{2}}\right]
+			\Psi_{i}(x,y,z,t) = 0
+			\label{eq:psi_wave}
+		\end{align}
+\end{subequations}
+mit $\Psi_{i}$ in den drei kartesichen Raumrichtungen (\( i = x, y, z.\))
+
+\newcommand{\mapto}{\mathrel{\laplace}}
+Um dieses partielle System zu lösen, erfolgt eine Überführung zu gewöhnlichen Differentialgleichungen mittels dreifacher Fouriertransformation. 
+Dazu werden die Ortskoordinaten $x$ und $y$ aus dem Originalraum zu Wellenzahlen \(k_x\) und \(k_y\) im fouriertransformierten Bildraum \((x \mapto k_x,\; y \mapto k_y)\) sowie die Zeit $t$ in den Frequenzbereich $\omega$ \((t \mapto \omega\)) überführt.\\
+Um entlang der $z$-Koordinate  im Folgenden Randbedingungen vergeben zu können, bleibt diese untransformiert im Originalraum \citep{Mueller2007}.
+
+Die Transformation des Systems partieller Differentialgleichungen (\ref{eq:partielle_DGL}) in den fouriertransfmorierten Bildraum führte zur Umwandlung in das System gewöhnlicher Differentialgleichungen und lässt sich darstellen durch:
+\begin{subequations}\label{eq:gewöhnliche_DGL}
+	{	\begin{align}
+			&\left[-k_x^{2}-k_y^{2}+k_p^{2}+\frac{\partial^{2}}{\partial z^{2}}\right]
+			\hat{\Phi}(k_x,k_y,z,\omega) = 0 \label{eq:phi_helmholtz}\\[6pt]
+			&\left[-k_x^{2}-k_y^{2}+k_s^{2}+\frac{\partial^{2}}{\partial z^{2}}\right]
+			\hat{\Psi}_{i}(k_x,k_y,z,\omega) = 0 \label{eq:psi_helmholtz}
+		\end{align}
+	}
+\end{subequations}
+mit der Kompressionswellenzahl \( k_p = \frac{\omega}{c_p} \;\text{und der Scherwellenzahl}\; k_s = \frac{\omega}{c_s} \).
+
+Das Symbol (\^{}) kennzeichnet dabei ab sofort die fouriertransformierten Größen.
+
+
+Zur Lösung zieht \cite{Fruehe2010} einen analytischen Exponentialansatz (\ref{eq:expo_solutions}) heran. Da außerdem gemäß \cite{Long1967} für das Potential $\Psi_{z} = 0$ gilt, wird die folgende Lösung in $\alpha=x,y$ definiert.
+\begin{subequations}\label{eq:expo_solutions}
+	{\begin{align}
+			&\hat{\Phi} = A_{1} e^{\lambda_{1} z} + A_{2} e^{-\lambda_{1} z}\label{eq:phi_sol}\\[4pt]
+			&\hat{\Psi}_{\alpha} = B_{\alpha1} e^{\lambda_{2} z} + B_{\alpha2} e^{-\lambda_{2} z}\label{eq:psi_sol}
+		\end{align}
+	}
+\end{subequations}
+mit \( \lambda_{1} = \sqrt{k_x^{2}+k_y^{2}-k_p^{2}},\;
+\lambda_{2} = \sqrt{k_x^{2}+k_y^{2}-k_s^{2}} \)
+
+sowie den unbekannten Koeffizienten
+\(A_1, A_2, B_{\alpha1}, B_{\alpha2}\)
+
+Der Lösungsansatz (\ref{eq:expo_solutions}) der Potentiale $\hat{\Phi}$ und $\hat{\Psi}_{\alpha}$ ermöglicht die Berechnung der Verschiebungen \(\hat{u}_{k}\) und Spannugen \(\hat{\sigma}_{k}\) im fouriertransformierten Raum. 
+Der Index (\({}_k\)) steht dabei für den Halbraum, der im kartesischen Koordinatensystem beschrieben wird.
+
+So lässt sich die Verschiebung im fouriertransformierten Raum \(\hat{u}_{k}\) über die Matrix $\bigl[\hat{H}_{k}\bigr]$, dessen Einträge den Exponentialansatz (\ref{eq:expo_solutions}) enthalten, und dem Vektor $C_k$, der die unbekannten Koeffizienten enthält, wie folgt darstellen \citep{Fruehe2010}: 
+\begin{equation}\label{eq:displ_hs}
+	\hat{u}_{k} = \bigl[\hat{H}_{k}\bigr]\cdot C_{k}
+\end{equation}
+%Die Einträge der Gleichung (\ref{eq:displ_hs}) sind im Anhang (\ref{cha:Halbraum}) aufgeführt. Eine genauere Herleitung der Lösung ist außerdem in den Dissertationen von \cite{Hackenberg2016} und \cite{Freisinger2022} zu finden.
+
+%ablage:
+%Dabei enthalten die Matrizen $\bigl[\hat{H}_{z}\bigr]$ und $\bigl[\hat{K}_{z}\bigr]$ wieder Einträge, die aus dem gewählten Lösungsansatz resultieren.
+
+Über die Verschiebungs-Verzerrungsbeziehung, die Spannungs-Verzerrungsbeziehung sowie einer Transfomation in den Fourierraum lassen sich die Spannungen \(\hat{\sigma}_{k}\) nach \cite{Mueller2007} hergeleiten. Sie lassen sich darstellen durch:
+\begin{equation}\label{eq:sigma_factorization}
+	\hat{\sigma}_{k} = \bigl[\hat{K}_{k}\bigr]\cdot C_{k}
+\end{equation}
+Dabei enthalten die Matrizen $\bigl[\hat{H}_{k}\bigr]$ und $\bigl[\hat{K}_{k}\bigr]$ Einträge, die aus dem gewählten Lösungsansatz resultieren und der Vektor $C_k$ die unbekannten Koeffizienten.
+
+Eine ausführliche Herleitung der Gleichungen (\ref{eq:displ_hs}) und (\ref{eq:sigma_factorization}), sowie die konkreten Einträge der Vektoren und Matrizen ist neben in der Arbeit von \cite{Fruehe2010} auch in der Dissertation von \cite{Mueller2007} zu finden.
+%Für eine genaue Herleitung wird auf die Dissertation von \cite{Fruehe2010} verwiesen.
+
+%Die Gleichung (\ref{eq:sigma_factorization}) enthält ebenfalls den Vektor $C_k$ mit den unbekannten Koeffizienten. Die Einträge der Gleichung (\ref{eq:sigma_factorization} sind ebenfalls im Anhang (\ref{cha:Halbraum}) zu finden. 
+
+Die sechs unbekannten Koeffizienten \(A_1, A_2, B_{\alpha1}, B_{\alpha2}\), die aus dem gewählten Exponentialansatz (\ref{eq:expo_solutions}) resultieren, werden über Randbedingungen bestimmt.
+
+Die drei Koeffizienten \(A_2, B_{x2}, B_{y2}\) ergeben sich unter Heranziehung der Sommerfeldschen Abstrahlbedingung. Diese fordert, dass die Amplitude der Wellen in zunehmender Tiefe abklingt und sich die Wellenausbreitung nur in positiver z-Richtung, also weg von der Halbraumoberfläche, fortsetzt.
+
+Die übrigen unbekannten Koeffizienten \(A_1, B_{x1}, B_{y1}\) werden durch die Randbedingung an der Halbraumoberfläche hergeleitet, da die angreifende Belastung mit der Spannung an der Oberfläche im Gleichgewicht stehen muss \citep{Mueller2007}.
+
+Um nun die Spannungen und Verschiebungen im Originalraum ($x$, $y$ und $z$) zu erhalten, erfolgt eine mehrfache Fourier-Rücktransformation. 
+
+
+
+\section{Fundamentalsystem Vollraum mit zylindrischem Hohlraum}
+\label{sec:Zylinder}
+
+Im Gegensatz zur Lösungsfindung im Halbraum, werden die im Kapitel (\ref{sec:Helmholtz}) hergeleiteten Potentiale $\Phi$ und $\Psi_{i}$ für das System Vollraum mit zylindrischem Hohlraum in Zylinderkoordinaten beschrieben. 
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[t]{0.48\textwidth}
+		\hspace*{25mm}
+		\centering
+		\includesvg[width=\linewidth,pretex=\centering]{svg/cha_02_svg_05_fs_cyl}
+		\label{fig:cyl_a}
+	\end{subfigure}\hfill
+	\begin{subfigure}[t]{0.48\textwidth}
+		\centering
+			\hspace*{-7mm}
+		\includesvg[width=\linewidth,pretex=\centering]{svg/cha_02_svg_06_cyl_cos}
+		\label{fig:cyl_b}
+	\end{subfigure}
+	\caption{Vollraum mit zylindrischem Hohlraum (rechts) und Zylinderkoordinaten (links) \citep{Freisinger2022}}
+	\label{fig:cyl_pair}
+\end{figure}
+
+
+Wie in der Abbildung (\ref{fig:cyl_pair}) dargestellt, wird die räumliche Lage eines Punktes durch die Koordinaten $x$, $r$ und $\phi$ beschrieben, wobei \(x\) die longitudinale, \(r\) die radiale und \(\phi\) die umlaufende Koordinate darstellt \cite{Freisinger2022}.
+
+
+Da das Vektorpotential in Zylinderkoordinaten nicht direkt zu entkoppelten Gleichungen führt \citep{Hackenberg2016}, zeigt \cite{Fruehe2010}, dass das Vektorfeld $\Psi_{i}$ unter der Zusatzbedingung, dass es quellfrei ist, durch zwei voneinander unabhängige Skalarfunktionen $\psi$ und $\chi$ dargestellt werden kann.
+Mithilfe dieser erweiterten Helmholtz-Zerlegung lassen sich schließlich wieder entkoppelte partielle Differentialgleichungen gewinnen, die sich wie folgt darstellen lassen:
+\begin{subequations}\label{eq:cyl_wave}
+	{
+		\begin{align}
+			&\left[\frac{\partial^{2}}{\partial x^{2}}
+			+ \frac{\partial^{2}}{\partial r^{2}}
+			+ \frac{1}{r}\frac{\partial}{\partial r}
+			+ \frac{1}{r^{2}}\frac{\partial^{2}}{\partial \varphi^{2}}
+			- \frac{1}{c_p^{2}}\frac{\partial^{2}}{\partial t^{2}}\right]
+			\Phi(x,r,\varphi,t)=0 \label{eq:cyl_phi}\\[6pt]
+			&\left[\frac{\partial^{2}}{\partial x^{2}}
+			+ \frac{\partial^{2}}{\partial r^{2}}
+			+ \frac{1}{r}\frac{\partial}{\partial r}
+			+ \frac{1}{r^{2}}\frac{\partial^{2}}{\partial \varphi^{2}}
+			- \frac{1}{c_s^{2}}\frac{\partial^{2}}{\partial t^{2}}\right]
+			\psi(x,r,\varphi,t)=0 \label{eq:cyl_psi}\\[6pt]
+			&\left[\frac{\partial^{2}}{\partial x^{2}}
+			+ \frac{\partial^{2}}{\partial r^{2}}
+			+ \frac{1}{r}\frac{\partial}{\partial r}
+			+ \frac{1}{r^{2}}\frac{\partial^{2}}{\partial \varphi^{2}}
+			- \frac{1}{c_s^{2}}\frac{\partial^{2}}{\partial t^{2}}\right]
+			\chi(x,r,\varphi,t)=0 \label{eq:cyl_chi}
+		\end{align}
+	}%
+\end{subequations}
+
+
+Analog zum Vorgehen in Kapitel (\ref{sec:Halbraum}) werden die partiellen Differentialgleichungen über eine Überführung mittels Fouriertransformation gelöst. Dabei genügt, anders als in kartesischen Koordinaten, beim zylindrischen Hohlraum
+eine zweifache Fouriertransformation bezüglich der Ortskoordinate $x$ in die Wellenzahlen $k_{x}$
+sowie die Zeit $t$ in den Frequenzbereich \((x \mapto k_x,\; t \mapto \omega)\). 
+Die Ortskoordinate $r$ bleibt dabei untransformiert.
+
+Das resultierdende System gewöhnlicher Differentialgleichungen lässt sich nach \cite{Fruehe2010} darstellen durch:
+\begin{subequations}\label{eq:cyl_fourier_odes}
+	{%
+		\begin{align}
+			&\left[-k_x^{2}
+			+ \frac{\partial^{2}}{\partial r^{2}}
+			+ \frac{1}{r}\frac{\partial}{\partial r}
+			- \frac{n^{2}}{r^{2}}
+			+ k_p^{2}\right]\,
+			\hat{\Phi}\!\left(k_x,r,n,\omega\right) = 0 \label{eq:13a}\\[6pt]
+			&\left[-k_x^{2}
+			+ \frac{\partial^{2}}{\partial r^{2}}
+			+ \frac{1}{r}\frac{\partial}{\partial r}
+			- \frac{n^{2}}{r^{2}}
+			+ k_s^{2}\right]\,
+			\hat{\psi}\!\left(k_x,r,n,\omega\right) = 0 \label{eq:13b}\\[6pt]
+			&\left[-k_x^{2}
+			+ \frac{\partial^{2}}{\partial r^{2}}
+			+ \frac{1}{r}\frac{\partial}{\partial r}
+			- \frac{n^{2}}{r^{2}}
+			+ k_s^{2}\right]\,
+			\hat{\chi}\!\left(k_x,r,n,\omega\right) = 0 \label{eq:13c}
+		\end{align}
+	}%
+\end{subequations}
+
+Die Lösung der Differentialgleichung (\ref{eq:cyl_fourier_odes}) leitet sich durch die Anwendung von Hankel-Funktionen her. Die daraus resultierenden Verschiebungen \(\hat{u}_{z}\) ergeben sich zu:
+\begin{equation}\label{eq:solution_cyl_uz}
+	\hat{u}_{z} = \bigl[\hat{H}_{z}\bigr]\cdot C_{z}
+\end{equation}
+Der Index (\({}_z\)) steht dabei für den Vollraum mit zylindrischem Hohlraum, der durch Zylinderkoordinaten beschrieben wird.
+
+Analog zur Herleitung der Spannungen im Halbraum \(\hat{\sigma}_{k}\) ergeben sich die Spannungen in Zylinderkoordinaten \(\hat{\sigma}_{z}\) aus der Verschiebung, der Verschiebungs- und der Spannungs-\\Verzerrungsbeziehung sowie einer Transformation in den Bildraum.
+\begin{equation}\label{eq:solution_cyl_sig}
+	\hat{\sigma}_{z} = \bigl[\hat{K}_{z}\bigr]\cdot C_{z}
+\end{equation}
+Dabei enthalten die Matrizen $\bigl[\hat{H}_{z}\bigr]$ und $\bigl[\hat{K}_{z}\bigr]$ wieder Einträge, die aus dem gewählten Lösungsansatz resultieren.
+
+Eine ausführliche Herleitung der Gleichungen (\ref{eq:solution_cyl_uz}) und (\ref{eq:solution_cyl_sig}), sowie die konkreten Einträge der Vektoren und Matrizen ist neben in der Arbeit von \cite{Fruehe2010} auch in der Dissertation von \cite{Mueller2007} zu finden.
+
+Analog zu den Gleichungen (\ref{eq:displ_hs}) und (\ref{eq:sigma_factorization}) enthält der Vektor \(C_{z}\) ebenfalls sechs unbekannte Koeffizienten, die mittels Randbedingungen ermittelt werden.
+
+Drei davon ergeben sich aus der Bedingung, dass sich die Amplituden der Wellen mit zunehmender Entfernung von der Belastung abnehmen und sich nur vom Ort der Belastung ausbreiten.
+Die übrigen Unbekannten werden über die Bedingung bestimmt, dass die eingeleitete Last am Zylinderrand mit den Spannungen im Gleichgewicht steht \citep{Fruehe2010}.
+
+Um die Spannungen und Verschiebungen im Orginalraum ($x$, $r$ und $\phi$) zu erhalten erfolgt eine erneute mehrfache Fourier-Rücktransformation. 
+
+
+
+
+
+\section{Überlagerung der Fundamentalsysteme}
+\label{sec:Superposition}
+
+Eine Lösung für das komplexe System Halbraum mit zylindrischem Hohlraum wird durch Überlagerung der in Kapitel (\ref{sec:Halbraum}) und (\ref{sec:Zylinder}) beschriebenen Fundamentalsysteme ermittelt.
+
+Dafür werden die beiden Fundamentalsysteme Halbraum und Vollraum mit zylindrischem Hohlraum an einer gemeinsamen, fiktiven Kopplungsfläche miteinander verknüpft. 
+An dieser Fläche müssen zwei Bedingungen erfüllt sein. 
+Einerseits muss ein Kräftegleichgewicht herrschen, sodass sich die aufgebrachten Spannungen der beiden Teilsysteme gegenseitig aufheben. 
+Andererseits müssen die Verschiebungen der beiden Teilsysteme an der Kopplungsfläche identisch sein.
+\begin{figure}[H]
+	\hspace*{5mm}
+	\centering
+	\begin{subfigure}[t]{0.48\textwidth}
+		\centering
+		\includesvg[width=\linewidth,pretex=\centering]{svg/cha_03_svg_03_hs_sup_stress}
+		\label{fig:Halbraum_fiktiveFlächen}
+	\end{subfigure}\hfill
+	\begin{subfigure}[t]{0.48\textwidth}
+		\centering
+		\includesvg[width=\linewidth,pretex=\centering]{svg/cha_03_svg_04_fs_cyl_sup_stress}
+		\label{fig:Zylinder_fiktiveFlächen}
+	\end{subfigure}
+	\caption{Fundamentalsysteme Halbraum (rechts) und Vollraum mit zylindrischem Hohlraum (links) mit fiktiven Überlagerungsflächen - basiert auf \cite{Freisinger2022}}
+	\label{fig:Überlagerung_fiktiveFlächen}
+\end{figure}
+Wie in Abbildung (\ref{fig:Überlagerung_fiktiveFlächen}) dargestellt, wird zu diesem Zweck im Halbraum an der Stelle, an der sich der Tunnel befindet, eine fiktive Zylinderoberfläche $\delta\Gamma_{\mathrm z}$ eingeführt. Im Vollraum mit zylindrischem Hohlraum wird entsprechend der Bodenoberfläche eine fiktive Halbraumoberfläche $\delta\Lambda$ eingeführt. 
+Entlang dieser Schnittflächen werden die genannten Randbedingungen formuliert und die Lösungen beider Teilsysteme miteinander kombiniert \citep{Mueller2007}.
+ 
+ Da die Spannungs- und Verschiebungsgrößen der beiden Teilsysteme in unterschiedlichen Koordinatensystemen vorliegen, ist eine Koordinatentransformation erforderlich.
+ \cite{Fruehe2010} definiert hierfür die Transformationsmatrix (\ref{eq:Transforationsmatrix}), mit der die Größen zwischen den beiden Systemen umgerechnet werden können.
+\begin{equation} \label{eq:Transforationsmatrix}
+\bigl[\beta\bigr]
+= \begin{bmatrix}
+	1 & 0 & 0 \\
+	0 & -\sin\varphi & \cos\varphi \\
+	0 & -\cos\varphi & -\sin\varphi
+\end{bmatrix}
+\end{equation}
+Mithilfe der Matrix (\ref{eq:Transforationsmatrix}) können Koordinatensysteme umgerechnet werden, sodass die Kopplungsbedingungen über die Verschiebungen $\hat{u} $ und die Spannungen $ \hat{\mathbf{\sigma}} $ formuliert und durchgeführt werden können.
+
+Eine detaillierte Herleitung der Kopplungsbedingungen ist in den Dissertationen von \cite{Fruehe2010}, \cite{Hackenberg2016} und \cite{Freisinger2022} zu finden.
+
+
+\newpage
+
+
+\section{Dynamische Steifigkeitsmatrix des ITM-Teilsystems}
+\label{sec:Steifigkeiten_ITM}
+
+Die Kopplung der Lösungen der ITM und der FEM erfolgt in Kapitel (\ref{cha:Kopplung}) mittels der dynamischen Steifigkeitsmatrix der Berechnungsmethoden. Aus diesem Grund ist es erforderlich, die Steifigkeitsmatrix für die ITM noch zu ermitteln.
+
+Zur besseren Nachvollziehbarkeit im Kopplungskapitel (\ref{cha:Kopplung}) werden die Vektoren und Matrizen mit dem Index ITM versehen.
+
+Die Berechnung der dynamischen Steifigkeitsmatrix erfolgt gemäß der folgenden allgemeinen Beziehung:
+\begin{equation}\label{eq:itm_system}
+	\hat{\mathbf K}_{\mathrm{ITM}}\;\hat{\mathbf u}_{\mathrm{ITM}}
+	= \hat{\mathbf P}_{\mathrm{ITM}}\,
+\end{equation}
+Wie in der Dissertation von \cite{Hackenberg2016} dargestellt, wird das Verschiebungsfeld $\hat{\mathbf u}_{\mathrm{ITM}}$ mit den Amplituden $\mathbf C$ und dem Verschiebungs-Operator $\hat{\mathbf U}_{\mathrm{ITM}}$. 
+Außerdem wird der Lastvektor $\hat{\mathbf P}_{\mathrm{ITM}}$ mit den Amplituden $\mathbf C$ und einem Spannungs-Operator, resultierend aus den Randbedinungungen, $\hat{\mathbf S}_{\mathrm{ITM}}$ dargestellt.
+\begin{subequations}\label{eq:itm_system_blocks}
+	\begin{align}
+		&\hat{\mathbf S}_{\mathrm{ITM}}\,\mathbf C = \hat{\mathbf P}_{\mathrm{ITM}}, \label{eq:itm_system_blocks_a}\\
+		&\hat{\mathbf u}_{\mathrm{ITM}} = \hat{\mathbf U}_{\mathrm{ITM}}\,\mathbf C. \label{eq:itm_system_blocks_b}
+	\end{align}
+\end{subequations}
+Im nächsten Schritt werden die Beziehungen aus der Gleichung (\ref{eq:itm_system_blocks}) in die Gleichung (\ref{eq:itm_system}) eingesetzt, um die dynamische Steifigkeitsmatrix zu ermitteln.
+\begin{subequations}\label{eq:itm_subeqs}
+	\begin{align}
+		&\hat{\mathbf u}_{\mathrm{ITM}}
+		= \hat{\mathbf U}_{\mathrm{ITM}}\;\hat{\mathbf S}_{\mathrm{ITM}}^{-1}\;\hat{\mathbf P}_{\mathrm{ITM}}
+		\label{eq:itm_subeqs_u}\\
+		&\text{mit }\;\hat{\mathbf K}_{\mathrm{ITM}}
+		= \hat{\mathbf S}_{\mathrm{ITM}}\;\hat{\mathbf U}_{\mathrm{ITM}}^{-1}
+		\label{eq:itm_subeqs_K}
+	\end{align}
+\end{subequations}
+Um die in Kapitel (\ref{cha:Kopplung}) beschriebene Kopplung durchzuführen, ist es erforderlich, die herangezogene Gleichung (\ref{eq:itm_system}) in Blockdarstellung, getrennt auf die beiden Koppelflächen $\Lambda$ und $\Gamma$ darzustellen.
+\begin{equation}\label{eq:itm_block_system_braced}
+	\underbrace{\begin{bmatrix}
+			\hat{\mathbf K}_{\Lambda\Lambda_{\mathrm{ITM}}} &
+			\hat{\mathbf K}_{\Lambda\Gamma_{\mathrm{ITM}}} \\
+			\hat{\mathbf K}_{\Gamma\Lambda_{\mathrm{ITM}}} &
+			\hat{\mathbf K}_{\Gamma\Gamma_{\mathrm{ITM}}}
+	\end{bmatrix}}_{\hat{\mathbf K}_{\mathrm{ITM}}}\,
+	\begin{pmatrix}
+		\hat{\mathbf u}_{\Lambda_{\mathrm{ITM}}} \\
+		\hat{\mathbf u}_{\Gamma_{\mathrm{ITM}}}
+	\end{pmatrix}
+	=
+	\begin{pmatrix}
+		\hat{\mathbf P}_{\Lambda_{\mathrm{ITM}}} \\
+		\hat{\mathbf P}_{\Gamma_{\mathrm{ITM}}}
+	\end{pmatrix}.
+\end{equation}
+Für eine detaillierte Herleitung wird auf die Dissertationen von \cite{Hackenberg2016} und \cite{Freisinger2022} verwiesen.

@@ -1,0 +1,194 @@
+% !TeX root = a_main_thesis.tex
+\chapter{Finite Elemente Methode}
+\label{cha:FEM}
+
+\section{Vorbemerkung}
+\label{sec:FEM_Vorbemerkung}
+
+Die ITM eignet sich zwar sehr gut für die Modellierung unendlicher Böden, für die Berechnung komplexerer Geometrien ist sie jedoch ungeeignet. Für die Geometrie im Tunnelbereich wird daher die Finite-Elemente-Methode (FEM) herangezogen.
+
+Die Implementierung erfolgt dabei im fouriertransformierten Raum.
+Dadurch wird der hohe Rechenaufwand reduziert, da die longitudinale Koordinate $x$ in den Wellenzahlbereich $k_x$ überführt wird \((x \mapto k_x\)). 
+Somit kann der konstante Tunnelquerschnitt mittels finiter Elemente auf ein zweidimensionales Problem heruntergebrochen werden \citep{Fruehe2010}. 
+
+Um im Anschluss die Lösungen der ITM- und FEM-Systeme zu einer Lösung des Gesamtsystems zu koppeln, ist zudem eine Teillösung im selben Fourier-Raum erforderlich. 
+Daher findet eine zusätzliche Überführung der Zeit $t$ in den Frequenzbereich $\omega$ statt \((t \mapto \omega\)). 
+
+Daher ist lediglich eine Diskretisierung in der y-z-Ebene erforderlich, die für jedes Wertepaar von $k_x$ und $\omega$ separat ausgewertet wird. 
+Dieser reduzierte Ansatz wird als 2,5-dimensional bezeichnet \cite{Freisinger_Hackenberg2020}. 
+
+
+\section{FE-Netz durch degenerierte Dreiecke}
+\label{degenerierte Dreiecke}
+
+Die zu untersuchende Geometrie Halbraum mit zylindrischem Hohlraum wurde bereits im gekoppelten ITM-FEM-Ansatz von \cite{Hackenberg2016} und \cite{Freisinger2022} untersucht.
+In den vorliegenden Dissertationen wurde der Tunnel durch ein FE-Netz bestehend aus quadranguläre Elementen analysiert (verweis auf 4node FE Mesh darunter).
+Die Implementation in \emph{MATLAB\texttrademark} dient dieser Arbeit als Grundlage.
+
+..... hier von FE-mesh 4node einfügen .... 
+
+Die vorliegende Arbeit verfolgt das Ziel , die Analyse des Tunnels weiterzuentwickeln. Zu diesem Zweck wird eine Umstellung des FE-Netzes von quadranguläre auf trianguläre Elemente vorgenommen.
+
+Die Realisierung dieses Ziels könnte durch die Implementierung eines FE-Netzes mit vollständig neuen Elementen erfolgen. Nach diesem Ansatz wird durch den Code die Generierung von finiten Elementen mit drei Knotenpunkten initiiert.
+
+Um eine möglichst hohe Ähnlichkeit zum Originalcode von \cite{Hackenberg2016} und \cite{Freisinger2022} zu gewährleisten, wurde sich für den Degenerationsansatz entschieden.
+
+\cite{Zienkiewicz2013} präsentiert diesen Ansatz als eine Möglichkeit, lineare Dreiecke aus der Degeneration von linearen Vierecken zu gewinnen.
+Hierbei werden zwei benachbarte Knoten eines 4-Knoten-Elements übereinandergelegt, sodass diese identische Koordinaten aufweisen. In der Folge degeneriert das Rechteckselement topologisch zu einem Dreieck (vgl Abbildung unten)
+
+... Abbildung aus Zienkiewicz zeichnen --> aus 4node zu 3 node ...
+
+Im Rahmen der Implementierung erfolgt eine Löschung der doppelten Information des vierten Knotens an entsprechender Stelle, sodass im weiteren Verlauf von einem triangulären Element mit drei Knoten ausgegangen werden kann.
+
+
+Nach erfolgter Degenerierung liegen lineare, trianguläre Elemente mit drei Knotenpunkten vor, die jeweils drei Verschiebungsfreiheitsgrade \(u_x, u_y, u_z\) besitzen (verweis auf Abbildung drunter).
+
+....2,5 dimensionales finites Element dreieck mit verschiebungen an Knoten angezeicchnet! -> Fig 4.2 Hackenberg ...
+
+Diese Freiheitsgrade lassen sich in einen Knotenverschiebungsvektor $\tilde{\mathbf u}_{n}^{T}$ zusammenfassen:
+\begin{equation}\label{eq:un_rowvec}
+	\tilde{\mathbf u}_{n}^{T}
+	=\bigl(\tilde{u}_{x1}\; \tilde{u}_{y1}\; \tilde{u}_{z1}\; \tilde{u}_{x2}\; \tilde{u}_{y2}\; \tilde{u}_{z2}\;
+	\tilde{u}_{x3}\; \tilde{u}_{y3}\; \tilde{u}_{z3}\bigr).
+\end{equation}
+Mittels Ansatzfunktionen werden die Verschiebungsfelder innerhalb der Dreiecke interpoliert. Für degenerierte Dreiecke formuliert \cite{Zienkiewicz2013} die Ansatzfunktionen durch die Koordinaten $\eta,\ \zeta \in [-1,1]$ zu:
+\begin{subequations}\label{eq:shape_functions}
+	\begin{align}
+		N_1 &= \frac{1}{4}\,(1-\zeta)(1-\eta), \label{eq:shape_funcs_a}\\
+		N_2 &= \frac{1}{4}\,(1+\zeta)(1-\eta), \label{eq:shape_funcs_b}\\
+		N_3 &= \frac{1}{2}\,(1+\eta).        \label{eq:shape_funcs_c}
+	\end{align}
+\end{subequations}
+Es besteht demnach folgende Beziehung zwischen dem Verschiebungsfeld $\tilde{\bm u}$ und dem Knotenverschiebungsvektor $\tilde{\bm u}_{n}$:
+\begin{equation}\label{eq:u_interp}
+	\tilde{\bm u} \;=\; \mathbf N \tilde{\bm u}_{n}\,.
+\end{equation}
+Die Matrix \(\mathbf{N}\) enthält dabei die Ansatzfunktionen $N_1, N_2, N_3$ und lässt sich wie folgt formulieren:
+\begin{equation}\label{eq:N_matrix}
+	\mathbf N =
+	\begin{bmatrix}
+		N_1(\eta,\zeta) & 0   & 0   & N_2(\eta,\zeta) & 0   & 0   & N_3(\eta,\zeta) & 0   & 0 \\[-2pt]
+		0   & N_1(\eta,\zeta) & 0   & 0   & N_2(\eta,\zeta) & 0   & 0   & N_3(\eta,\zeta) & 0 \\[-2pt]
+		0   & 0   & N_1(\eta,\zeta) & 0   & 0   & N_2(\eta,\zeta) & 0   & 0   & N_3(\eta,\zeta)\\[-2pt]
+	\end{bmatrix}
+\end{equation}
+Für die nachfolgende Berechnung werden sowohl die Matrix \(\mathbf{N}\) als auch die Matrix \(\bar{\mathbf{B}}\) herangezogen. Diese beinhaltet die Ableitungen der Ansatzfunktionen (\ref{eq:shape_functions}) im Wellenzahlbereich $k_x$, um Verzerrungen aus den Knotenverschiebungen zu berechnen \citep{Hackenberg2016}.
+Die Einträge dieser Matrix sind im Anhang (\ref{sec:B_Matrix}) zu finden.
+
+
+
+\section{Dynamische Steifigkeitsmatrix des 2,5D FEM-Teilsystems}
+\label{sec:twofiveD_FEM}
+
+Die Herleitung der Elementsteifigkeitsmatrix erfolgt gemäß dem Prinzip der virtuellen Arbeiten (PvA) im zweifach fouriertransformierten Wellenzahl-Frequenz-Raum. Dieses Prinzip besagt, dass die Summe aller virtuellen Arbeiten, die durch die im System wirkenden Kräfte verursacht werden, gleich null sein muss.
+Für das elastische Kontinuum setzen sich die Arbeitsanteile aus der inneren virtuellen Arbeit $\delta W_i$, der virtuellen Arbeit infolge der d'Alembert'schen Trägheit $\delta W_T$ und der äußeren virtuellen Arbeit $\delta W_a$ zusammen \citep{Klein2003}:
+\begin{equation}\label{eq:PvA}
+	\delta W \;=\; \delta W_i + \delta W_T + \delta W_a \;=\; 0 \,.
+\end{equation}
+Da die Berechnung im \(k_x\)-\(\omega\)-Bereich erfolgt, müssen die virtuellen Arbeitsanteile im transformierten Raum formuliert werden. 
+Im weiterem Verlauf werden die zweifach fouriertransformierten Größen mit der Notation $\tilde{}$ versehen.
+
+Unter Berücksichtigung der Ansatzfunktionen (\ref{eq:shape_functions}) sowie der Verschiebungs-Verzerrungs-\\beziehung $\tilde{\varepsilon}=\bar{\mathbf B}\,\tilde{\mathbf u}_{n}$ und der Spannungs-Verzerrungs-Beziehung $\tilde{\sigma} = \mathbf D\,\tilde{\varepsilon}$, kann das Prinzip der virtuellen Arbeiten (\ref{eq:PvA}) nach \cite{Freisinger2022} wie folgt umformuliert werden:
+\begin{equation}\label{eq:PvA2}
+	-\delta \tilde{\mathbf u}_{n}^{\mathsf H}\,
+	\underbrace{\left(\int\limits_{(A)} \bar{\mathbf B}^{\mathsf H}\,\mathbf D\,\bar{\mathbf B}\,\mathrm dA\right)}_{\bar{\mathbf{K}}}\,
+	\tilde{\mathbf u}_{n}
+	\;+\;
+	\delta \tilde{\mathbf u}_{n}^{\mathsf H}\,
+	\underbrace{\left(\int\limits_{(A)} \mathbf N^{\mathsf H}\,\tilde{\mathbf p}\,\mathrm dA\right)}_{\tilde{\mathbf p}_{n}}
+	\;+\;
+	\delta \tilde{\mathbf u}_{n}^{\mathsf H}\,\omega^{2}\,
+	\underbrace{\left(\int\limits_{(A)} \rho\,\mathbf N^{\mathsf H}\,\mathbf N\,\mathrm dA\right)}_{\mathbf M}\,
+	\tilde{\mathbf u}_{n}
+	= 0 .
+\end{equation}
+Das Symbol \(^{(\mathsf H)}\) kennzeichnet dabei hermitesche Matrizen, die transponiert und anschließend komplex konjugiert wurden \citep{Hackenberg2016}.
+
+In Gleichung (\ref{eq:PvA2}) sind zum einen die Matrizen $\mathbf{N}$ und $\bar{\mathbf B}$ enthalten, die sich aus den Ansatzfunktionen ergeben (Gleichugnen (\ref{eq:N_matrix}) und (\ref{eq:Bbar_tri3})). 
+Außerdem findet sich auch der Knotenverschiebungsvektor $\tilde{\bm u}_{n}$ aus Gleichung (\ref{eq:u_interp}) wieder.
+Des Weiteren ist die Elastizitätsmatrix $\mathbf{D}$ enthalten, welche sich ergibt zu:
+\begin{equation}\label{eq:Elastizitätsmatrix}
+	\mathbf D =
+	\begin{bmatrix}
+		\lambda+2\mu & \lambda      & \lambda      & 0 & 0 & 0 \\
+		\lambda      & \lambda+2\mu & \lambda      & 0 & 0 & 0 \\
+		\lambda      & \lambda      & \lambda+2\mu & 0 & 0 & 0 \\
+		0            & 0            & 0            & \mu & 0   & 0 \\
+		0            & 0            & 0            & 0   & \mu & 0 \\
+		0            & 0            & 0            & 0   & 0   & \mu
+	\end{bmatrix}
+\end{equation}
+Die Laméschen Konstanten $\lambda$ und $\mu$ wurden bereits in Gleichung (\ref{eq:lame_konstanten}) eingeführt und enthalten dabei die elastischen Größen.
+
+
+Aus der Gleichung (\ref{eq:PvA2}) lassen sich zudem die Beziehungen für die Steifigkeitsmatrix \(\bar{\mathbf{K}}(k_x)\), den nodalen Lastvektor $\tilde{\mathbf p}_{n}$ und die Massenmatrix \(\mathbf{M}\) erkennen. 
+Die Lösung dieser Integrale erfolgt numerisch im nachfolgenden Kapitel (\ref{sec:Numerik}).
+
+Die Gleichung (\ref{eq:PvA2}) lässt sich mithilfe der gelösten Integrale in der für die FEM typischen Formulierung darstellen:
+\begin{equation}\label{eq:PvA_FEM}
+	\bar{\mathbf K}\,\tilde{\mathbf u}_{n}
+	- \omega^{2}\,\bar{\mathbf M}\,\tilde{\mathbf u}_{n}
+	\;=\;
+	\underbrace{\bigl(\bar{\mathbf K}-\omega^{2}\,\bar{\mathbf M}\bigr)}_{\text{dyn.\ Steifigkeitsmatrix}}\,
+	\tilde{\mathbf u}_{n}
+	\;=\; \tilde{\mathbf p}_{n}\,.
+\end{equation}
+mit der dynamische Steifigkeitsmatrix $\tilde{\mathbf K}(k_x,\omega)=\bar{\mathbf K}-\omega^{2}\bar{\mathbf M}$.
+
+
+Die Kopplung der beiden Teilsysteme FEM und ITM wird in Kapitel (\ref{cha:Kopplung}) durch die dynamischen Steifigketismatrizen der Berechnungsmethoden durchgeführt. \\
+\cite{Hackenberg2016} formuliert dafür eine Matrix in Blockdarstellung, in deren System die Freiheitsgrade innerhalb des FE-Netzes $\Omega$ von denen an der Kopplungsfläche $\Gamma$ getrennt werden.
+
+Zur besseren Nachvollziehbarkeit im Kopplungskapitel (\ref{cha:Kopplung}) werden die Vektoren und Matrizen mit dem Index FE versehen.
+\begin{equation}\label{eq:fe_block_system}
+	\begin{bmatrix}
+		\tilde{\mathbf K}_{\Gamma\Gamma_{\mathrm{FE}}} & \tilde{\mathbf K}_{\Gamma\Omega_{\mathrm{FE}}} \\[6pt]
+		\tilde{\mathbf K}_{\Omega\Gamma_{\mathrm{FE}}} & \tilde{\mathbf K}_{\Omega\Omega_{\mathrm{FE}}}
+	\end{bmatrix}
+	\begin{pmatrix}
+		\tilde{\mathbf u}_{\Gamma_{\mathrm{FE}}} \\[2pt]
+		\tilde{\mathbf u}_{\Omega_{\mathrm{FE}}}
+	\end{pmatrix}
+	=
+	\begin{pmatrix}
+		\tilde{\mathbf P}_{\Gamma_{\mathrm{FE}}} \\[2pt]
+		\tilde{\mathbf P}_{\Omega_{\mathrm{FE}}}
+	\end{pmatrix}
+\end{equation}
+
+
+
+
+\section{Numerische Implementation}
+\label{sec:Numerik}
+
+Im Implementierungsprozess werden die in Gleichung (\ref{eq:PvA2}) dargestellten Integrale der Steifigkeitsmatrix \(\bar{\mathbf{K}}\) und der Massenmatrix \(\mathbf M\) numerisch gelöst.
+
+Für die numerishe Integration existieren mehrere Optionen. Es besteht die Möglichkeit, das Integrationsintervall in n äquisidistant angeordnete Abschnitte zu unterteilen und es anschließend über n+1 Stützstellen zu integrieren. Dieses Verfahren wird auch als Newton-Cotes-Quadratur bezeichnet und wird sowohl in \cite{Klein2003} als auch in \cite{Gross2023} vorgestellt.
+
+Im Rahmen der Integration in der FEM findet in der Regel die Gauß´sche Quadraturformel aufgrund ihrer hohen Genauigkeit Anwendung, welche auf einen gewichteten Ansatz und optimierte Stützstellen zurückgreift.
+
+In der von \cite{Hackenberg2016} entwickelten Implementierung werden dafür vier Gaußpunkte verwendet mit je 2 Gaußpunkte je Koordinatenrichtung
+
+
+
+
+Sodass letzendlich die Integrale aus Gleichung (\ref{eq:PvA2}) numerisch lösen lassen zu:
+\begin{subequations}\label{eq:KM_1D_gp}
+	\begin{align}
+		\mathbf{\bar K}
+		&= \sum_{k=1}^{n_{\mathrm{GP}}}
+		\mathbf{\bar B(k_x,\eta_k,\zeta_k)}^{\mathsf H}\,
+		\mathbf{D'}\,
+		\mathbf{\bar B(k_x,\eta_k,\zeta_k)}\,
+		\det(\bm J)\,w_k \label{eq:K_1D_gp}\\[0.5ex]
+		\mathbf{M}
+		&= \sum_{k=1}^{n_{\mathrm{GP}}}
+		\rho\,
+		\mathbf{N(\eta_k,\zeta_k)}^{\mathsf H}\,
+		\mathbf{N(\eta_k,\zeta_k)}\,
+		\det(\bm J)\,w_k \label{eq:M_1D_gp}
+	\end{align}
+\end{subequations}
+
+Wobei die Jacobi Matrix $\bm J$ die Transformation and Relation der Elementkoordinaten und globalen Koordinaten herstellt

@@ -1,0 +1,42 @@
+\babel@toc {ngerman}{}\relax 
+\contentsline {chapter}{\nonumberline Abstract}{III}{chapter*.1}%
+\contentsline {chapter}{\nonumberline Erklärungen}{IV}{chapter*.2}%
+\contentsline {subsubsection}{\nonumberline Danksagung}{IV}{subsubsection*.4}%
+\contentsline {subsubsection}{\nonumberline Erklärung}{IV}{subsubsection*.6}%
+\contentsline {chapter}{\nonumberline Abbildungsverzeichnis}{VII}{chapter*.8}%
+\contentsline {chapter}{\nonumberline Tabellenverzeichnis}{VIII}{chapter*.9}%
+\contentsline {chapter}{\nonumberline Listings}{IX}{chapter*.10}%
+\contentsline {chapter}{\nonumberline Symbolverzeichnis}{X}{chapter*.11}%
+\contentsline {chapter}{\numberline {1}Einleitung}{1}{chapter.1}%
+\contentsline {chapter}{\numberline {2}Grundlagen der Elastizitätstheorie}{2}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Vorbemerkung}{2}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Lamésche Gleichung}{2}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Satz von Helmholtz}{3}{section.2.3}%
+\contentsline {chapter}{\numberline {3}Integraltransformationsmethode}{4}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Vorbemerkung}{4}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Fundamentalsystem Halbraum}{5}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Fundamentalsystem Vollraum mit zylindrischem Hohlraum}{7}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Überlagerung der Fundamentalsysteme}{9}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Dynamische Steifigkeitsmatrix des ITM-Teilsystems}{11}{section.3.5}%
+\contentsline {chapter}{\numberline {4}Finite Elemente Methode}{12}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Vorbemerkung}{12}{section.4.1}%
+\contentsline {section}{\numberline {4.2}FE-Netz durch degenerierte Dreiecke}{12}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Dynamische Steifigkeitsmatrix des 2,5D FEM-Teilsystems}{14}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Numerische Implementation}{16}{section.4.4}%
+\contentsline {chapter}{\numberline {5}Kopplung der FEM mit der ITM}{18}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Vorbemerkung}{18}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Transfomation der Lösung des FE-Systems}{18}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Kopplung}{19}{section.5.3}%
+\contentsline {chapter}{\numberline {A}Anhang}{21}{appendix.A}%
+\contentsline {section}{\numberline {A.1}Verschiebungs und Spannungs Matrizen in kartesischen Koordinaten}{21}{section.A.1}%
+\contentsline {section}{\numberline {A.2}Ableitungsmatrix \(\bar {\mathbf {B}}\) zur FE-Berechnung}{22}{section.A.2}%
+\contentsline {section}{\numberline {A.3}Transformatioins Matrizen zur Kopplung}{22}{section.A.3}%
+\contentsline {subsection}{\numberline {A.3.1}Koordinatentransformationsmatrix $\mathbf {T_1}$}{22}{subsection.A.3.1}%
+\contentsline {subsection}{\numberline {A.3.2}Fouriertransformationsmatrix $\mathbf {T_2}$}{23}{subsection.A.3.2}%
+\contentsline {section}{\numberline {A.4}Verwendete Software}{23}{section.A.4}%
+\contentsline {subsection}{\numberline {A.4.1}Maple\texttrademark }{23}{subsection.A.4.1}%
+\contentsline {subsection}{\numberline {A.4.2}gnuplot}{24}{subsection.A.4.2}%
+\contentsline {subsection}{\numberline {A.4.3}MATLAB}{24}{subsection.A.4.3}%
+\contentsline {section}{\numberline {A.5}Maple\texttrademark -Programm für ein 2D-Problem}{25}{section.A.5}%
+\contentsline {chapter}{\nonumberline Literaturverzeichnis}{26}{chapter*.21}%
+\providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 

@@ -1,0 +1,116 @@
+\chapter{Anhang}
+\label{cha:anhang}
+
+\section{Verschiebungs und Spannungs Matrizen in kartesischen Koordinaten}
+\label{cha:Halbraum}
+
+Die Lösung der Verschiebungen \(\hat{u}_{k}\) in Kapitel (\ref{sec:Halbraum}) lassen sich nach \cite{Fruehe2010} wie folgt darstellen:
+\begin{subequations}\label{eq:uHc_block}
+	{%
+		\begin{align}
+			\hat{\mathbf{u}}_{k} &= \bigl[\hat{\mathbf{H}}_{k}\bigr]\;\mathbf{C}_{k}
+			\label{eq:uHc_main}\\
+			\intertext{mit}
+			\bigl[\hat{\mathbf{H}}_{k}\bigr] &=
+			\begin{bmatrix}
+				i\,k_{x}e^{\lambda_{1}z} & i\,k_{x}e^{-\lambda_{1}z} & 0
+				& -\lambda_{2}e^{\lambda_{2}z} & \lambda_{2}e^{-\lambda_{2}z} & 0 \\[2pt]
+				i\,k_{y}e^{\lambda_{1}z} & i\,k_{y}e^{-\lambda_{1}z} & \lambda_{2}e^{\lambda_{2}z}
+				& -\lambda_{2}e^{-\lambda_{2}z} & 0 & 0 \\[2pt]
+				\lambda_{1}e^{\lambda_{1}z} & -\lambda_{1}e^{-\lambda_{1}z} & -i\,k_{y}e^{\lambda_{2}z}
+				& -i\,k_{y}e^{-\lambda_{2}z} & i\,k_{x}e^{\lambda_{2}z} & i\,k_{x}e^{-\lambda_{2}z}
+			\end{bmatrix}
+			\label{eq:Hk_def}\\
+			\mathbf{C}_{k}^{\mathsf T} &= \begin{pmatrix}
+				A_1 & A_2 & B_{x1} & B_{x2} & B_{y1} & B_{y2}
+			\end{pmatrix}
+			\label{eq:Ck_row}
+		\end{align}
+	}%
+\end{subequations}
+
+Darauf aufbauend beschreibt \cite{Mueller2007} die Spannungen \(\hat{\sigma}_{k}\) durch:
+\begin{subequations}\label{eq:sigmaHc_block}
+	{%
+		\setlength{\mathindent}{0pt}
+		\begin{align}
+			\hat{\boldsymbol{\sigma}}_{k}
+			&= \bigl[\hat{\boldsymbol{K}}_{k}\bigr]\;\boldsymbol{C}_{k}
+			\label{eq:sigma_equals_KC}\\
+			\intertext{mit}
+			\bigl[\hat{\boldsymbol{K}}_{k}\bigr]
+			&= \mu\,
+			\begin{bmatrix}
+				-(2k_x^{2}+\tfrac{\lambda}{\mu}k_p^{2})e^{\lambda_{1}z} &
+				-(2k_x^{2}+\tfrac{\lambda}{\mu}k_p^{2})e^{-\lambda_{1}z} & 0 & 0 &
+				-2i k_x \lambda_{2}e^{\lambda_{2}z} & 2i k_x \lambda_{2}e^{-\lambda_{2}z} \\
+				-(2k_y^{2}+\tfrac{\lambda}{\mu}k_p^{2})e^{\lambda_{1}z} &
+				-(2k_y^{2}+\tfrac{\lambda}{\mu}k_p^{2})e^{-\lambda_{1}z} &
+				2i k_y \lambda_{2}e^{\lambda_{2}z} & -2i k_y \lambda_{2}e^{-\lambda_{2}z} & 0 & 0 \\
+				(2k_r^{2}-k_s^{2})e^{\lambda_{1}z} &
+				(2k_r^{2}-k_s^{2})e^{-\lambda_{1}z} &
+				-2i k_y \lambda_{2}e^{\lambda_{2}z} & 2i k_y \lambda_{2}e^{-\lambda_{2}z} &
+				2i k_x \lambda_{2}e^{\lambda_{2}z} & -2i k_x \lambda_{2}e^{-\lambda_{2}z} \\
+				-2k_x k_y e^{\lambda_{1}z} & -2k_x k_y e^{-\lambda_{1}z} &
+				i k_x \lambda_{2}e^{\lambda_{2}z} & -i k_x \lambda_{2}e^{-\lambda_{2}z} &
+				-i k_y \lambda_{2}e^{\lambda_{2}z} & i k_y \lambda_{2}e^{-\lambda_{2}z} \\
+				2i k_y \lambda_{1}e^{\lambda_{1}z} & -2i k_y \lambda_{1}e^{-\lambda_{1}z} &
+				(\lambda_{2}^{2}+k_y^{2})e^{\lambda_{2}z} & (\lambda_{2}^{2}+k_y^{2})e^{-\lambda_{2}z} &
+				-k_x k_y e^{\lambda_{2}z} & -k_x k_y e^{-\lambda_{2}z} \\
+				2i k_x \lambda_{1}e^{\lambda_{1}z} & -2i k_x \lambda_{1}e^{-\lambda_{1}z} &
+				k_x k_y e^{\lambda_{2}z} & k_x k_y e^{-\lambda_{2}z} &
+				-(\lambda_{2}^{2}+k_x^{2})e^{\lambda_{2}z} & -(\lambda_{2}^{2}+k_x^{2})e^{-\lambda_{2}z}
+			\end{bmatrix}
+			\label{eq:Kk_matrix}
+		\end{align}
+	}%
+\end{subequations}
+
+
+
+\section{Verwendete Software}
+\label{cha:software}
+
+\subsection{Maple\texttrademark}
+\label{app:maple}
+\emph{Maple\texttrademark} ist ein kommerzielles Mathematik-Paket der Firma Maplesoft. Seine Stärke liegt darin, dass es mathematische Ausdrücke algebraisch verarbeiten kann. Im vorliegenden Fall werden auf diese Weise Ableitungen und Integrale berechnet, ohne auf numerische Aspekte Rücksicht zu nehmen. Dies ermöglicht einen kurzen und trotzdem voll funktionalen Code. \emph{Maple\texttrademark} wurde in den Version 12 und 14 verwendet.\\
+Internet: \url{http://www.maplesoft.com/}
+
+\subsection{gnuplot}
+\emph{gnuplot} wurde verwendet, um für diese Arbeit Diagramme und Plots anzufertigen. Es ist ein interaktives, Kommandozeilen-gesteuertes Programm, das auf fast allen gängigen Betriebssystemen lauffähig ist. Es ist in der Lage, sowohl 2D als auch 3D Plots zu erstellen und diese in verschiedenen Dateiformaten zu exportieren. \emph{gnuplot} ist ein Open Source Projekt und wird immer noch weiterentwickelt. Hier wurde die zum Zeitpunkt der Niederschrift aktuelle Version 4.2.3 verwendet.\\
+Internet: \url{http://www.gnuplot.info/}
+die Anzahl der Knoten auf 1000 beschränkt ist. Glücklicher Weise ist die in der REM eine annehmbare Menge, mit der sich durchaus einige Problemen behandeln lassen.
+
+\clearpage
+
+\section{Maple\texttrademark -Programm für ein 2D-Problem}
+\label{sec:maplecode}
+
+%
+%\lstinputlisting[style=maple,
+  %label=lst:maplecode,
+  %firstnumber=1,
+  %caption={[Maple\texttrademark -Programm für ein 2D-Problem] \texttt{maple2D.mw}}
+  %] {code/maplebsp.txt}
+  
+
+%\section{{\texttt{C++}} code of dragLift.C}
+%\label{sec:draglift}
+%
+%\lstinputlisting[style=cppcode,
+%  label=draglift,
+%  firstnumber=1,
+%  ] {code/dragLift.C}
+%  
+%\section{{\texttt{C++}} code of stlIcoFoam.C}
+%\label{sec:stlicofoam}
+%
+%\lstinputlisting[style=cppcode,
+%  label=stlicofoam,
+%  firstnumber=1,
+%  ] {code/stlIcoFoam.C}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End: 

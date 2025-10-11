@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<lxCollection version="1" xmlns:txclxp="http://schemas.ToolsCenter.org/TeXnicCenter/LaTeXCommands.xsd">
+	<lxPackage name="bmvorlagen" 
+		path="" 
+		desc="Commands for the classes and packages of Lehrstuhl für Baumechanik, TUM" 
+		class="TRUE">		
+		<lxCommand name="lived" parameters="2" desc="Creates a nice life-span."/>
+		<lxCommand name="einheit" parameters="1" desc="Creates a nice unit."/>
+		<lxCommand name="geteilt" parameters="3" desc="Creates two colum area with minipages."/>
+		<lxCommand name="stz" parameters="0" desc="Stütze 1.5mm/5mm"/>
+		<lxCommand name="stze" parameters="0" desc="Stütze 1.5mm/5.5mm"/>
+		<lxCommand name="stzj" parameters="0" desc="Stütze 5mm/14mm"/>
+		<lxCommand name="stzjj" parameters="0" desc="Stütze 5mm/10mm"/>
+		<lxCommand name="stzb" parameters="0" desc="Stütze 1mm/5mm"/>
+		<lxCommand name="myarray" parameters="1"/>
+		<lxCommand name="myd" parameters="1"/>
+		<lxCommand name="mymatrix" parameters="1"/>
+		<lxCommand name="myvector" parameters="1"/>
+		<lxCommand name="jkvector" parameters="1"/>
+		<lxCommand name="Grad" parameters="0"/>
+		<lxCommand name="infint" parameters="0"/>
+		<lxCommand name="text" parameters="1"/>
+		
+		<lxEnvironment name="beispiel"
+			expafter="}[Optionale Beispielüberschrift]&#xA;\label{bsp:blabla}&#xA;&#xA;\end{beispiel}" 
+			expbefore="\begin{"
+		/>
+		
+		<lxCommand name="lampenboxx[\label{lbox:}]" parameters="1" desc="Includes a reminder-box."/>
+		<lxCommand name="includesvg" parameters="1" desc="Includes a svg-file compiling it with inkscape."/>
+		
+		<lxCommand name="luecke" parameters="1"/>
+		<lxEnvironment name="pluecke"
+			expafter="}&#xA;&#xA;\end{pluecke}" 
+			expbefore="\begin{"
+		/>
+		
+		<lxEnvironment name="aufgabe"
+			expafter="}[A]{5}&#xA;&#xA;\end{aufgabe}" 
+			expbefore="\begin{"
+		/>
+		<lxCommand name="karoseite" parameters="0" desc=""/>
+		<lxCommand name="karofill" parameters="0" desc=""/>
+		<lxCommand name="karoblock" parameters="1" desc=""/>
+		
+		<lxEnvironment name="align"
+			expafter="}&#xA;&#xA;\label{eq:}&#xA;\end{align}" 
+			expbefore="\begin{"
+		/>
+		<lxEnvironment name="bmatrix"
+			expafter="}&#xA;&#xA;\end{bmatrix}" 
+			expbefore="\begin{"
+		/>
+	</lxPackage>
+</lxCollection>

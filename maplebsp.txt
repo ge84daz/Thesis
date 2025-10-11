@@ -1,0 +1,25 @@
+> restart;
+
+> with(plots):
+  with(linalg):
+
+> Green := (xp,yp,xq,yq,k) -> - I/4*HankelH2(0,k*sqrt((xp-xq)^2 + (yp - yq)^2));
+  dGdx := D[1](Green);
+  dGdy := D[2](Green);
+  N[1] := xsi -> -xsi+1;
+  N[2] := xsi -> xsi;
+
+> Rquer := 1:
+  n := 4:
+  f := 0.1111:
+  c := 1.000001:
+  rho := 1.0:
+
+> omega := evalf(2*Pi*f);
+  k := evalf(omega/c);
+  lambda := evalf(c/f);
+  r := 2*Rquer/(1/cos(Pi/n)+1);
+  R := 2*Rquer - r;
+  an := 2*sqrt(R^2-r^2);
+  betan := 2*Pi/n;
+  richtung := - betan:

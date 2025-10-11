@@ -1,0 +1,56 @@
+\chapter{Grundlagen der Elastizitätstheorie}
+\label{cha:Grundgleichungen}
+
+
+\section{Vorbemerkung}
+\label{sec:Vorbemerkung_Grundgleichungen}
+
+Das Aufbringen dynamischer Lasten auf ein Medium führt zur Entstehung von Spannungen und Verschiebungen, die sich im Erdreich in Form von mechanischen Wellen ausbreiten. 
+Die folgende Betrachtung basiert auf der Annahme eines linear-elastischen Bodenmodells für das ein isotropes Materialverhalten vorausgesetzt wird. Wie \cite{Haupt1986} beschreibt, kann das Bodenmodell durch diese vereinfachte Betrachtung in guter Näherung beschrieben werden, da die resultierenden Formänderungen infolge der dynamischen Lasten als gering einzustufen sind. 
+
+Um mithilfe der in den Kapiteln (\ref{cha:ITM}) und (\ref{cha:FEM}) vorgestellten Berechnungsmethoden Systemantworten für Verschiebungen und Spannungen zu ermitteln, werden im Folgenden die zugrunde liegenden Grundlagen der Elastizitätstheorie vorgestellt. 
+
+\section{Lamésche Gleichung}
+\label{sec:Lame}
+Unter den oben genannten Annahmen für das Bodenmodell beschreibt die Lamésche Differentialgleichung die wellenförmige Ausbreitung von Verschiebungen und Spannungen in einem dreidimensionalen Kontinuum infolge einer dynamischen Belastung. 
+
+Wie in der Dissertation von \cite{Fruehe2010} beschrieben, werden diese partiellen Differentialgleichungen in einem kartesischen Koordinatensystem mit Hilfe der Gleichgewichtsbedingung des Kontinuums und des Green-Lagrangeschen Verzerrungstensors hergeleitet. 
+
+Gemäß \cite{Lame1852} ergibt sich dadurch ein System gekoppelter partieller Differentialgleichungen zu: 
+	\begin{equation}\label{eq:lame}
+	\mu u^{i}{}_{|j}^{\,j} + (\lambda + \mu) u^{j}{}_{|j}^{\,i} - \rho \ddot{u}^{i} = 0
+	\end{equation}
+Dabei enthalten die Laméschen Konstanten \(\mu\) und \(\lambda\) auch die elastischen Konstanten Schubmodul \(G\), Elastizitätsmodul \(E\) und Querzahl \(\nu\), die sich wie folgt zusammensetzen:
+\begin{subequations}\label{eq:lame_konstanten}
+	\begin{align}
+		\mu &= G = \frac{E}{2\,(1+\nu)}  \label{eq:lame_mu}\\
+		\lambda &= \frac{E\,\nu}{(1+\nu)\,(1-2\nu)}  \label{eq:lame_lambda}
+	\end{align}
+\end{subequations}
+
+
+\section{Satz von Helmholtz}
+\label{sec:Helmholtz}
+Zur Lösung der partiell gekoppelten Differentialgleichungen (\ref{eq:lame}) wird eine Entkopplung mittels des Satzes von Helmholtz angewendet.
+Dem zufolge lässt sich das Vektorfeld der Verschiebung \(u_i \) in die Summe eines skalaren $\Phi$ und eines  vektorielles Potentials $\Psi_{i}$ zerlegen, wie beispielsweise in \cite{Mueller2007} beschrieben.
+Der Index (\({}_i\)) steht dabei für die drei kartesischen Raumrichtungen (\( i = x, y, z.\)) und eine ausführliche Herleitung ist zudem in der Dissertation von \cite{Fruehe2010} zu finden.
+
+Aus physikalischer Sicht lassen sich die Potentiale als verschiedene Wellentypen interpretieren.
+Das skalare Potential $\Phi$ beschreibt dabei die Longitudinalwellen, auch P-Wellen oder Kompressionswellen genannt, welche eine Volumenänderung bewirken.
+Das vektorielle Potential $\Psi_{i}$ beschreibt hingegen die Transversalwellen, auch S-Wellen genannt, die mit einer Gestaltsänderung einhergehen. Diese beiden Raumwellentypen treten im Boden auf.
+An der Bodenoberfläche erscheinen darüber hinaus Love- und Rayleigh-Wellen, die ebenfalls aus den Potentialen abgeleitet werden können \citep{Haupt1986}.
+
+Als Ergebnis dieser Zerlegung erhält man ein System entkoppelter Potentiale, mit dem die Berechnung in den folgenden Kapiteln möglich ist.
+
+
+
+
+%durch den rotationsfreien Gradienten des Skalarfelds $\Phi$ und die quellfreien Rotation des Vektrofelds $\Psi_{l\,|k}\,^{ikl}$ zerlegen \cite{Lame1852}. Somit ergibt sich eine Zerlegung zu:
+
+%\begin{equation}\label{eq:Helmholtz}
+%	u^{i} &= \Phi\big|^{\,i} + \Psi_{l}\big|_{k}\,\varepsilon^{ikl}
+%\end{equation}
+
+%Durch Einsetzen von \ref{eq:Helmholtz} in \ref{eq:lame} zerfällt das gekoppelte Gleichungssystem in voneinander unabhängige Potentiale.
+
+%Das skalare Potential beschreibt die Longitudinalwellen (P-Wellen), also Kompressionswellen, die eine Volumenänderung hervorrufen. Das vektorielle Potential hingegen beschreibt Transversalwellen (S-Wellen), die mit einer Gestaltsänderung einhergehen. 
