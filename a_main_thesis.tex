@@ -1,26 +1,28 @@
+% !TeX document-id = {0d492b7b-1b48-4a52-8f8e-b1e0cd78cc5d}
+% !TeX TXS-program:compile = txs:///pdflatex/[--shell-escape]
 \documentclass[ 
-   12pt,                  % Schriftgroesse 12pt
-   a4paper,               % Layout fuer Din A4
-   twoside,               % Layout fuer beidseitigen Druck
-   headinclude,           % Kopfzeile wird Seiten-Layouts mit beruecksichtigt
-   headsepline,           % horizontale Linie unter Kolumnentitel
-   plainheadsepline,      % horizontale Linie auch beim plain-Style
-   BCOR=12mm,             % Korrektur fuer die Bindung
-   DIV=18,                % DIV-Wert fuer die Erstellung des Satzspiegels, siehe scrguide
-   parskip=half,          % Absatzabstand statt Absatzeinzug
-   openany,               % Kapitel können auf geraden und ungeraden Seiten beginnen
-   bibliography=totoc,    % Literaturverz. wird ins Inhaltsverzeichnis eingetragen
-   toc=listof,            % Abbildungs- Tabellen- und sonstige verzeichnisse mit ins INhaltsverz.
-   numbers=noenddot,      % Kapitelnummern immer ohne Punkt
-   captions=tableheading, % korrekte Abstaende bei TabellenUEBERschriften
-   fleqn,                 % fleqn: Gleichungen links (statt mittig)
-   % draft                % Keine Bilder in der Anzeige, overfull hboxes werden angezeigt
-   % To be edited by the author:
-   % german,              % deutsche Sprache, global
-   % bmcolorlinks,
-   % bmshowlabels
-   % mpinclude,           % mehr Platz für Randnotzzen
-      ]{bmvorlagen/bmthesis}
+12pt,                  % Schriftgroesse 12pt
+a4paper,               % Layout fuer Din A4
+twoside,               % Layout fuer beidseitigen Druck
+headinclude,           % Kopfzeile wird Seiten-Layouts mit beruecksichtigt
+headsepline,           % horizontale Linie unter Kolumnentitel
+plainheadsepline,      % horizontale Linie auch beim plain-Style
+BCOR=12mm,             % Korrektur fuer die Bindung
+DIV=18,                % DIV-Wert fuer die Erstellung des Satzspiegels, siehe scrguide
+parskip=half,          % Absatzabstand statt Absatzeinzug
+openany,               % Kapitel können auf geraden und ungeraden Seiten beginnen
+bibliography=totoc,    % Literaturverz. wird ins Inhaltsverzeichnis eingetragen
+toc=listof,            % Abbildungs- Tabellen- und sonstige verzeichnisse mit ins INhaltsverz.
+numbers=noenddot,      % Kapitelnummern immer ohne Punkt
+captions=tableheading, % korrekte Abstaende bei TabellenUEBERschriften
+fleqn,                 % fleqn: Gleichungen links (statt mittig)
+% draft                % Keine Bilder in der Anzeige, overfull hboxes werden angezeigt
+% To be edited by the author:
+% german,              % deutsche Sprache, global
+% bmcolorlinks,
+% bmshowlabels
+% mpinclude,           % mehr Platz für Randnotzzen
+]{bmvorlagen/bmthesis}
 
 
 
@@ -41,7 +43,7 @@
 
 
 \usepackage{array,longtable}
-\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+%\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 % --- Mac: Pfad zu Inkscape setzen ---
 % Variante A: Inkscape aus der .app (meist richtig)
 \svgsetup{
@@ -62,6 +64,8 @@
 %\usepackage[backend=biber,style=ieee]{biblatex}
 %\addbibresource{Literaturverzeichnis.bib}  % Jabref referenz hier!!!
 
+%\usepackage[backend=biber,style=authoryear,natbib=true]{biblatex}
+%\addbibresource{Literaturverzeichnis.bib}
 
 
 
@@ -76,6 +80,10 @@
 \hyphenation{Post-pro-cess-ing--In-te-gral}
 \raggedbottom
 
+
+
+\newcommand{\iu}{\mathrm{i}}   % imaginäre Einheit i aufrecht
+\newcommand{\eu}{\mathrm{e}}   % Eulersche Zahl e aufrecht
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Setting for new version of svg-Package
 % to handle file names as the old one did
@@ -92,6 +100,30 @@
 		\fill (1.8em,0) circle(0.7ex);
 	}%
 }
+
+%Fouriertransformationen:
+\newcommand{\mapto}{\mathrel{\laplace}}
+\newcommand{\mapfrom}{\mathrel{\Laplace}}
+
+%\newcommand{\legline}[1]{\tikz[baseline=-0.6ex]\draw[#1,line width=1.2pt] (0,0)--(1.6em,0);}
+
+%Farben Kennzeichnungen
+\usepackage{xcolor,tikz}
+\definecolor{MatlabBlue}{rgb}{0,0.4470,0.7410}
+\definecolor{MatlabOrange}{rgb}{0.8500,0.3250,0.0980}
+\DeclareRobustCommand{\legline}[1]{%
+	\tikz[baseline=-0.6ex]\draw[#1,line width=1.4pt] (0,0)--(1.8em,0);%
+}
+\DeclareRobustCommand{\legFour}{\legline{MatlabBlue}}           % blaue Volllinie
+\DeclareRobustCommand{\legThree}{\legline{MatlabOrange,dashed}} % orange gestrichelt
+
+%Tabellen
+\usepackage{array,ragged2e,tabularx}
+% Feste Symbolspalte in Math-Mode, rechtsbündig
+\newcolumntype{Sym}[1]{>{\RaggedLeft\arraybackslash$\displaystyle}m{#1}<{$}}
+% Beschreibungsspalte mit schönerem Flattersatz
+\newcolumntype{Desc}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+
 \usepackage{trfsigns}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -105,59 +137,65 @@
 
 
 \begin{document}
-\frontmatter
-\pagenumbering{Roman}
-
-\include{deck}                % Deckblatt
-\cleardoubleemptypage 
-\include{abstract}            % Abstract der Arbeit
-\include{erkl}
-\cleardoubleemptypage         % Das Inhaltsverzeichnis auf einer rechten Seite beginnen
-
-\begin{spacing}{1.0}          % Verzeichnisse werden mit einzeiligem Abstand gesetzt
- \tableofcontents             % Inhaltsverzeichnis
-% \addcontentsline{toc}{chapter}{Abbildungsverzeichnis} so kann man von hand was in Inhaltsverzeichnis schreiben
- \listoffigures              % Abbildungsverzeichnis
- \listoftables               % Tabellenverzeichnis
- \lstlistoflistings          % Verzeichnis der Listings
-\end{spacing}
-
-\include{symbole}             % Symbolverzeichnis  nur temporär ausgeblendet von Anton
-
-\cleardoubleplainpage         % Das erste Kapitel des Hauptteils auf einer rechten Seite beginnen
-
-\mainmatter                   % den Hauptteil beginnen
-\include{einleit}             % Einleitung
-%\include{kapitel1}
-
-
-\include{Grundgleichungen}
-\include{ITM}
-\include{FEM}
-\include{Kopplung}
-
-
-\appendix                     % Anhang
- \include{anhang}    
-
-%\backmatter
-%\begin{spacing}{1.0}          % Verzeichnisse werden mit einzeiligem Abstand gesetzt
-%\bibliographystyle{apalike}   % oder abbrv, alpha, plainnat, unsrt, ...
-% \bibliography{Literaturverzeichnis} % ohne .bib-Endung
-%\printbibliography
-%\begin{spacing}{1.0}          % Verzeichnisse werden mit einzeiligem Abstand gesetzt
+	\frontmatter
+	\pagenumbering{Roman}
+	
+	\include{deck}                % Deckblatt
+	\cleardoubleemptypage 
+	\include{abstract}            % Abstract der Arbeit
+	\include{erkl}
+	\cleardoubleemptypage         % Das Inhaltsverzeichnis auf einer rechten Seite beginnen
+	
+	\begin{spacing}{1.0}          % Verzeichnisse werden mit einzeiligem Abstand gesetzt
+		\tableofcontents             % Inhaltsverzeichnis
+		% \addcontentsline{toc}{chapter}{Abbildungsverzeichnis} so kann man von hand was in Inhaltsverzeichnis schreiben
+		\listoffigures              % Abbildungsverzeichnis
+		\listoftables               % Tabellenverzeichnis
+		% \lstlistoflistings          % Verzeichnis der Listings
+	\end{spacing}
+	
+	\include{symbole}             % Symbolverzeichnis  nur temporär ausgeblendet von Anton
+	
+	\cleardoubleplainpage         % Das erste Kapitel des Hauptteils auf einer rechten Seite beginnen
+	
+	\mainmatter                   % den Hauptteil beginnen
+	\include{einleit}             % Einleitung
+	%\include{kapitel1}
+	
+	
+	\include{Grundgleichungen}
+	\include{ITM}
+	\include{FEM}
+	\include{Kopplung}
+	\include{Verifizierung}
+	\include{schluss}
+	\appendix                     % Anhang
+	\include{anhang}    
+	
+	%\backmatter
+	%\begin{spacing}{1.0}          % Verzeichnisse werden mit einzeiligem Abstand gesetzt
+	%\bibliographystyle{apalike}   % oder abbrv, alpha, plainnat, unsrt, ...
+	% \bibliography{Literaturverzeichnis} % ohne .bib-Endung
+	%\printbibliography
+	%\begin{spacing}{1.0}          % Verzeichnisse werden mit einzeiligem Abstand gesetzt
 	%\inputencoding{latin2}
 	%\bibliography{Literaturverzeichnis}
 	%\inputencoding{utf8}
-%\end{spacing}
-%\end{spacing}
-\backmatter
-\begin{spacing}{1.0}          % Verzeichnisse werden mit einzeiligem Abstand gesetzt
-%	\inputencoding{latin2}
-	\bibliography{Literaturverzeichnis}
-
-%	\inputencoding{utf8}
-\end{spacing}
-
+	%\end{spacing}
+	%\end{spacing}
+	%\backmatter
+	%\begin{spacing}{1.0}          % Verzeichnisse werden mit einzeiligem Abstand gesetzt
+	%	\inputencoding{latin2}
+	%	\bibliography{Literaturverzeichnis}
+	%	\inputencoding{utf8}
+	%\end{spacing}
+	%\printbibliography[heading=bibintoc,title={Literaturverzeichnis}]
+	
+	\backmatter
+	\begin{spacing}{1.0}          % Verzeichnisse werden mit einzeiligem Abstand gesetzt
+		\inputencoding{utf8}
+		\bibliography{a_main_thesis}
+		\inputencoding{utf8}
+	\end{spacing}
+	
 \end{document}
-

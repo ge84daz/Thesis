@@ -33,9 +33,26 @@
 \newcommand{\bmauthor}{B.Sc. ...}
 \newcommand{\bmkeywords}{Thesis, Example}
 \newcommand{\bmstartpage}{5}
-\graphicspath{{bilder/}{bilder_svg/}{plots/}}    % Falls texinput nicht gesetzt -> Bildverzeichnisse
+%\graphicspath{{bilder/}{svg/}{plots/}}    % Falls texinput nicht gesetzt -> Bildverzeichnisse		%Anton auskommentiert
 \hyphenation{Post-pro-cess-ing--In-te-gral}
 \raggedbottom
+
+%Anton eingefügt:
+\usepackage{svg}
+
+% --- Mac: Pfad zu Inkscape setzen ---
+% Variante A: Inkscape aus der .app (meist richtig)
+\svgsetup{
+	inkscapeexe = {/Applications/Inkscape.app/Contents/MacOS/inkscape},
+	inkscapelatex = true % Text via LaTeX setzen (empfohlen)
+}
+
+% (optional) Variante B: Homebrew-Installation
+% \svgsetup{inkscapeexe = {/opt/homebrew/bin/inkscape}, inkscapelatex=true} % Apple Silicon
+% \svgsetup{inkscapeexe = {/usr/local/bin/inkscape},  inkscapelatex=true}   % Intel-Macs
+
+% Suchpfad(e) für deine SVGs (passt zu deiner Struktur)
+\svgpath{{svg/}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Setting for new version of svg-Package

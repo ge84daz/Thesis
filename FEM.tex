@@ -1,5 +1,5 @@
 % !TeX root = a_main_thesis.tex
-\chapter{Finite Elemente Methode}
+\chapter{Finite-Elemente-Methode}
 \label{cha:FEM}
 
 \section{Vorbemerkung}
@@ -11,68 +11,100 @@ Die Implementierung erfolgt dabei im fouriertransformierten Raum.
 Dadurch wird der hohe Rechenaufwand reduziert, da die longitudinale Koordinate $x$ in den Wellenzahlbereich $k_x$ überführt wird \((x \mapto k_x\)). 
 Somit kann der konstante Tunnelquerschnitt mittels finiter Elemente auf ein zweidimensionales Problem heruntergebrochen werden \citep{Fruehe2010}. 
 
-Um im Anschluss die Lösungen der ITM- und FEM-Systeme zu einer Lösung des Gesamtsystems zu koppeln, ist zudem eine Teillösung im selben Fourier-Raum erforderlich. 
+Um im Anschluss die Lösungen der ITM- und FEM-Teilsysteme zu einer Lösung des Gesamtsystems zu koppeln, ist zudem eine Teillösung im selben Fourierraum erforderlich. 
 Daher findet eine zusätzliche Überführung der Zeit $t$ in den Frequenzbereich $\omega$ statt \((t \mapto \omega\)). 
 
-Daher ist lediglich eine Diskretisierung in der y-z-Ebene erforderlich, die für jedes Wertepaar von $k_x$ und $\omega$ separat ausgewertet wird. 
-Dieser reduzierte Ansatz wird als 2,5-dimensional bezeichnet \cite{Freisinger_Hackenberg2020}. 
+Daher beschränkt sich die Diskretisierung auf die $y$-$z$-Ebene, die für jedes Wertepaar von $k_x$ und $\omega$ separat ausgewertet wird. 
+Dieser reduzierte Ansatz wird als 2,5-dimensional bezeichnet \citep{Freisinger_Hackenberg2020}. 
 
 
-\section{FE-Netz durch degenerierte Dreiecke}
-\label{degenerierte Dreiecke}
+\section{Trianguläre finite Elemente durch degenerierte Vierecke}
+\label{sec:degenerierte Dreiecke}
 
 Die zu untersuchende Geometrie Halbraum mit zylindrischem Hohlraum wurde bereits im gekoppelten ITM-FEM-Ansatz von \cite{Hackenberg2016} und \cite{Freisinger2022} untersucht.
-In den vorliegenden Dissertationen wurde der Tunnel durch ein FE-Netz bestehend aus quadranguläre Elementen analysiert (verweis auf 4node FE Mesh darunter).
-Die Implementation in \emph{MATLAB\texttrademark} dient dieser Arbeit als Grundlage.
+Im Rahmen dieser Dissertationen wurde der Tunnel durch ein FE-Netz bestehend aus viereckigen finiten Elementen analysiert, wie in Abbildung (\ref{fig:FE_4node}) dargestellt.
+Diese Implementation in \emph{MATLAB\texttrademark} dient der vorliegenden Arbeit als Grundlage.
+Das Ziel der vorliegenden Arbeit ist die Weiterentwicklung der Analyse des Tunnels. Zu diesem Zweck wird eine Umstellung des FE-Netztes von viereckige auf dreieckige Elemente vorgenommen.
 
-..... hier von FE-mesh 4node einfügen .... 
+Für die Implementierung lassen sich zwei verschiedene Herangehensweisen in Betracht ziehen. Die Implementierung des dreieckigen FE-Netzes kann zum einen durch neue, native Dreieckselemente erfolgen. In den Arbeiten von \cite{Gross2023} und \cite{Zienkiewicz2013} wird auf spezifische Formeln verwiesen, die sich auf die baryzentrischen Koordinaten eines Dreiecks beziehen und für die Implementierung nativer Dreieckselemente von Relevanz sind. Die Positionen werden dabei relativ zu den übrigen Punkten des Dreiecks beschrieben.
 
-Die vorliegende Arbeit verfolgt das Ziel , die Analyse des Tunnels weiterzuentwickeln. Zu diesem Zweck wird eine Umstellung des FE-Netzes von quadranguläre auf trianguläre Elemente vorgenommen.
+So beschreibt \cite{Zienkiewicz2013} ein natives Dreieck mit den Knotenkoordinaten $x_a$ und $y_a$ durch die Ansatzfunktionen $N_a(x,y)$ mit $a=1,2,3$ wie folgt:
+\begin{subequations}\label{eq:tri_shape_linear}
+	\begin{equation}\label{eq:tri_shape_linear_a}
+		N_a(x,y)=\frac{1}{2{A_\Delta}}\,\bigl(a_a+b_a\,x+c_a\,y\bigr)
+	\end{equation}
+	\noindent\text{mit}
+	\begin{equation}\label{eq:tri_shape_linear_b}
+		\begin{aligned}
+			a_1 &= x_2y_3 - x_3y_2, &\qquad b_1 &= y_2 - y_3, &\qquad c_1 &= x_3 - x_2,\\
+			a_2 &= x_3y_1 - x_1y_3, &        b_2 &= y_3 - y_1, &        c_2 &= x_1 - x_3,\\
+			a_3 &= x_1y_2 - x_2y_1, &        b_3 &= y_1 - y_2, &        c_3 &= x_2 - x_1.
+		\end{aligned}
+	\end{equation}
+	\noindent\text{sowie der Fläche des Dreiecks}
+	\begin{equation}\label{eq:tri_shape_linear_c}
+		A_\Delta=\frac{1}{2}\bigl(x_1 b_1 + x_2 b_2 + x_3 b_3\bigr)
+	\end{equation}
+\end{subequations}
+Die Implementation nativer, dreieckiger, finiter Elemente geht mit einem höheren Aufwand einher, der sich zum einen aus der Sortierung der Elemente sowie der Umstellung auf dreiecksspezifische Koordinaten ergibt.
 
-Die Realisierung dieses Ziels könnte durch die Implementierung eines FE-Netzes mit vollständig neuen Elementen erfolgen. Nach diesem Ansatz wird durch den Code die Generierung von finiten Elementen mit drei Knotenpunkten initiiert.
+Um im Rahmen der vorliegenden Arbeit eine möglichst hohe Ähnlichkeit zu der gegebenen Implementierung von \cite{Hackenberg2016} und \cite{Freisinger2022} zu gewährleisten, wird ein alternativer Ansatz herangezogen.
 
-Um eine möglichst hohe Ähnlichkeit zum Originalcode von \cite{Hackenberg2016} und \cite{Freisinger2022} zu gewährleisten, wurde sich für den Degenerationsansatz entschieden.
+In der Arbeit von \cite{Zienkiewicz2013} wird der Degenerationsansatz präsentiert, der  eine Degeneration linearer Vierecke zu linearen Dreiecken beschreibt.
+Hierbei fallen zwei benachbarte Knoten eines Elements mit vier Knoten zusammen, sodass diese identische Koordinaten aufweisen. In der Folge degeneriert das viereckige Element topologisch zu einem Dreieck, wie in Abbildung (\ref{fig:Degeneration}) dargestellt.
+\begin{figure}[H]
+	\hspace*{28mm}
+	%	\centering
+	\includesvg[height=4.5cm,keepaspectratio]{svg/Degeneration}
+	\caption{Degeneration eines viereckigen zu einem dreieckigen Element \citep{Zienkiewicz2013}.}
+	\label{fig:Degeneration}
+\end{figure}
+Im Rahmen der Implementierung erfolgt eine Löschung der doppelten Information des vierten Knotens an entsprechender Stelle, sodass im weiteren Verlauf von einem dreieckigen Element mit drei Knoten ausgegangen werden kann.
 
-\cite{Zienkiewicz2013} präsentiert diesen Ansatz als eine Möglichkeit, lineare Dreiecke aus der Degeneration von linearen Vierecken zu gewinnen.
-Hierbei werden zwei benachbarte Knoten eines 4-Knoten-Elements übereinandergelegt, sodass diese identische Koordinaten aufweisen. In der Folge degeneriert das Rechteckselement topologisch zu einem Dreieck (vgl Abbildung unten)
 
-... Abbildung aus Zienkiewicz zeichnen --> aus 4node zu 3 node ...
-
-Im Rahmen der Implementierung erfolgt eine Löschung der doppelten Information des vierten Knotens an entsprechender Stelle, sodass im weiteren Verlauf von einem triangulären Element mit drei Knoten ausgegangen werden kann.
-
-
-Nach erfolgter Degenerierung liegen lineare, trianguläre Elemente mit drei Knotenpunkten vor, die jeweils drei Verschiebungsfreiheitsgrade \(u_x, u_y, u_z\) besitzen (verweis auf Abbildung drunter).
-
-....2,5 dimensionales finites Element dreieck mit verschiebungen an Knoten angezeicchnet! -> Fig 4.2 Hackenberg ...
-
-Diese Freiheitsgrade lassen sich in einen Knotenverschiebungsvektor $\tilde{\mathbf u}_{n}^{T}$ zusammenfassen:
+Nach erfolgter Degenerierung liegen lineare, trianguläre Elemente mit drei Knotenpunkten vor, die jeweils drei Verschiebungsfreiheitsgrade \(u_x, u_y, u_z\) besitzen, wie in der Abbildung (\ref{fig:2,5dim_FE}) dargestellt.
+\begin{figure}[H]
+	\hspace*{47mm}
+	%	\centering
+	\includesvg[height=5cm,keepaspectratio]{svg/2,5dim_FE}
+	\caption{2,5-dimensionales dreickiges finites Element.}
+	\label{fig:2,5dim_FE}
+\end{figure}
+Diese Freiheitsgrade lassen sich in einen Vektor der Knotenverschiebungen $\tilde{\mathbf u}_{n}^{T}$ zusammenfassen:
 \begin{equation}\label{eq:un_rowvec}
 	\tilde{\mathbf u}_{n}^{T}
 	=\bigl(\tilde{u}_{x1}\; \tilde{u}_{y1}\; \tilde{u}_{z1}\; \tilde{u}_{x2}\; \tilde{u}_{y2}\; \tilde{u}_{z2}\;
-	\tilde{u}_{x3}\; \tilde{u}_{y3}\; \tilde{u}_{z3}\bigr).
+	\tilde{u}_{x3}\; \tilde{u}_{y3}\; \tilde{u}_{z3}\bigr)
 \end{equation}
-Mittels Ansatzfunktionen werden die Verschiebungsfelder innerhalb der Dreiecke interpoliert. Für degenerierte Dreiecke formuliert \cite{Zienkiewicz2013} die Ansatzfunktionen durch die Koordinaten $\eta,\ \zeta \in [-1,1]$ zu:
+\clearpage
+Mittels Ansatzfunktionen werden die Verschiebungsfelder innerhalb der Dreiecke interpoliert. Für degenerierte Dreiecke formuliert \cite{Zienkiewicz2013} die Ansatzfunktionen durch die normierten Koordinaten $\eta,\ \zeta \in [-1,1]$ wie folgt:
 \begin{subequations}\label{eq:shape_functions}
 	\begin{align}
-		N_1 &= \frac{1}{4}\,(1-\zeta)(1-\eta), \label{eq:shape_funcs_a}\\
-		N_2 &= \frac{1}{4}\,(1+\zeta)(1-\eta), \label{eq:shape_funcs_b}\\
-		N_3 &= \frac{1}{2}\,(1+\eta).        \label{eq:shape_funcs_c}
+		N_1 &= \frac{1}{4}\,(1-\zeta)(1-\eta) \label{eq:shape_funcs_a}\\
+		N_2 &= \frac{1}{4}\,(1+\zeta)(1-\eta) \label{eq:shape_funcs_b}\\
+		N_3 &= \frac{1}{2}\,(1+\eta)        \label{eq:shape_funcs_c}
 	\end{align}
 \end{subequations}
-Es besteht demnach folgende Beziehung zwischen dem Verschiebungsfeld $\tilde{\bm u}$ und dem Knotenverschiebungsvektor $\tilde{\bm u}_{n}$:
+Es besteht demnach folgende Beziehung zwischen dem Vektor der Verschiebungen $\tilde{\mathbf u}$ und dem Vektor der Knotenverschiebungen $\tilde{\mathbf u}_{n}$:
 \begin{equation}\label{eq:u_interp}
-	\tilde{\bm u} \;=\; \mathbf N \tilde{\bm u}_{n}\,.
+	\tilde{\mathbf u} \;=\; \mathbf N \cdot \tilde{\mathbf u}_{n}\,
 \end{equation}
 Die Matrix \(\mathbf{N}\) enthält dabei die Ansatzfunktionen $N_1, N_2, N_3$ und lässt sich wie folgt formulieren:
 \begin{equation}\label{eq:N_matrix}
-	\mathbf N =
+	\begingroup
+	\setlength{\arraycolsep}{2pt}      % Spaltenabstand in Matrizen kleiner (Standard ~5pt)
+	\renewcommand{\arraystretch}{0.95} % (optional) etwas geringerer Zeilenabstand
+	\mathbf N=
 	\begin{bmatrix}
-		N_1(\eta,\zeta) & 0   & 0   & N_2(\eta,\zeta) & 0   & 0   & N_3(\eta,\zeta) & 0   & 0 \\[-2pt]
-		0   & N_1(\eta,\zeta) & 0   & 0   & N_2(\eta,\zeta) & 0   & 0   & N_3(\eta,\zeta) & 0 \\[-2pt]
-		0   & 0   & N_1(\eta,\zeta) & 0   & 0   & N_2(\eta,\zeta) & 0   & 0   & N_3(\eta,\zeta)\\[-2pt]
+		N_1(\eta,\zeta)&0&0& N_2(\eta,\zeta)&0&0& N_3(\eta,\zeta)&0&0\\
+		0&N_1(\eta,\zeta)&0& 0&N_2(\eta,\zeta)&0& 0&N_3(\eta,\zeta)&0\\
+		0&0&N_1(\eta,\zeta)& 0&0&N_2(\eta,\zeta)& 0&0&N_3(\eta,\zeta)
 	\end{bmatrix}
+	\endgroup
 \end{equation}
-Für die nachfolgende Berechnung werden sowohl die Matrix \(\mathbf{N}\) als auch die Matrix \(\bar{\mathbf{B}}\) herangezogen. Diese beinhaltet die Ableitungen der Ansatzfunktionen (\ref{eq:shape_functions}) im Wellenzahlbereich $k_x$, um Verzerrungen aus den Knotenverschiebungen zu berechnen \citep{Hackenberg2016}.
+
+Für die nachfolgende Berechnung werden sowohl die Matrix \(\mathbf{N}\) als auch die Matrix \(\bar{\mathbf{B}}\) herangezogen. 
+Die Matrix $\bar{\mathbf{B}}$ enthält die Ableitungen der Ansatzfunktionen (\ref{eq:shape_functions}) im Wellenzahlbereich $k_x$, um Verzerrungen aus den Knotenverschiebungen zu berechnen \citep{Hackenberg2016}.
 Die Einträge dieser Matrix sind im Anhang (\ref{sec:B_Matrix}) zu finden.
 
 
@@ -83,12 +115,12 @@ Die Einträge dieser Matrix sind im Anhang (\ref{sec:B_Matrix}) zu finden.
 Die Herleitung der Elementsteifigkeitsmatrix erfolgt gemäß dem Prinzip der virtuellen Arbeiten (PvA) im zweifach fouriertransformierten Wellenzahl-Frequenz-Raum. Dieses Prinzip besagt, dass die Summe aller virtuellen Arbeiten, die durch die im System wirkenden Kräfte verursacht werden, gleich null sein muss.
 Für das elastische Kontinuum setzen sich die Arbeitsanteile aus der inneren virtuellen Arbeit $\delta W_i$, der virtuellen Arbeit infolge der d'Alembert'schen Trägheit $\delta W_T$ und der äußeren virtuellen Arbeit $\delta W_a$ zusammen \citep{Klein2003}:
 \begin{equation}\label{eq:PvA}
-	\delta W \;=\; \delta W_i + \delta W_T + \delta W_a \;=\; 0 \,.
+	\delta W \;=\; \delta W_i + \delta W_T + \delta W_a \;=\; 0 \,
 \end{equation}
-Da die Berechnung im \(k_x\)-\(\omega\)-Bereich erfolgt, müssen die virtuellen Arbeitsanteile im transformierten Raum formuliert werden. 
-Im weiterem Verlauf werden die zweifach fouriertransformierten Größen mit der Notation $\tilde{}$ versehen.
+Da die Berechnung im Wellenzahl-Frequenz-Raum erfolgt, müssen die virtuellen Arbeitsanteile im transformierten Raum formuliert werden.
+Die zweifach fouriertransformierten Größen werden mit dem Symbol $\tilde{}$ gekennzeichnet.
 
-Unter Berücksichtigung der Ansatzfunktionen (\ref{eq:shape_functions}) sowie der Verschiebungs-Verzerrungs-\\beziehung $\tilde{\varepsilon}=\bar{\mathbf B}\,\tilde{\mathbf u}_{n}$ und der Spannungs-Verzerrungs-Beziehung $\tilde{\sigma} = \mathbf D\,\tilde{\varepsilon}$, kann das Prinzip der virtuellen Arbeiten (\ref{eq:PvA}) nach \cite{Freisinger2022} wie folgt umformuliert werden:
+Unter Berücksichtigung der Ansatzfunktionen (\ref{eq:shape_functions}) sowie der Verschiebungs-Verzerrungs-\\beziehung $\tilde{\boldsymbol{\varepsilon}}=\bar{\mathbf B}\,\tilde{\mathbf u}_{n}$ und der Spannungs-Verzerrungs-Beziehung $\tilde{\sigma} = \mathbf D\,\tilde{\varepsilon}$, kann das Prinzip der virtuellen Arbeiten (\ref{eq:PvA}) nach \cite{Freisinger2022} wie folgt umformuliert werden:
 \begin{equation}\label{eq:PvA2}
 	-\delta \tilde{\mathbf u}_{n}^{\mathsf H}\,
 	\underbrace{\left(\int\limits_{(A)} \bar{\mathbf B}^{\mathsf H}\,\mathbf D\,\bar{\mathbf B}\,\mathrm dA\right)}_{\bar{\mathbf{K}}}\,
@@ -100,12 +132,12 @@ Unter Berücksichtigung der Ansatzfunktionen (\ref{eq:shape_functions}) sowie de
 	\delta \tilde{\mathbf u}_{n}^{\mathsf H}\,\omega^{2}\,
 	\underbrace{\left(\int\limits_{(A)} \rho\,\mathbf N^{\mathsf H}\,\mathbf N\,\mathrm dA\right)}_{\mathbf M}\,
 	\tilde{\mathbf u}_{n}
-	= 0 .
+	= 0 
 \end{equation}
-Das Symbol \(^{(\mathsf H)}\) kennzeichnet dabei hermitesche Matrizen, die transponiert und anschließend komplex konjugiert wurden \citep{Hackenberg2016}.
+Das Symbol (\(\cdot^{\mathsf H}\)) kennzeichnet dabei hermitesche Matrizen, die transponiert und anschließend komplex konjugiert wurden \citep{Hackenberg2016}.
 
-In Gleichung (\ref{eq:PvA2}) sind zum einen die Matrizen $\mathbf{N}$ und $\bar{\mathbf B}$ enthalten, die sich aus den Ansatzfunktionen ergeben (Gleichugnen (\ref{eq:N_matrix}) und (\ref{eq:Bbar_tri3})). 
-Außerdem findet sich auch der Knotenverschiebungsvektor $\tilde{\bm u}_{n}$ aus Gleichung (\ref{eq:u_interp}) wieder.
+In Gleichung (\ref{eq:PvA2}) sind zum einen die Matrizen $\mathbf{N}$ und $\bar{\mathbf B}$ enthalten, die sich aus den Ansatzfunktionen ergeben und in den Gleichungen (\ref{eq:N_matrix}) und (\ref{eq:Bbar_tri3}) gegeben sind. 
+Außerdem findet sich auch der Vektor der Knotenverschiebung $\tilde{\mathbf u}_{n}$ aus Gleichung (\ref{eq:u_interp}) wieder.
 Des Weiteren ist die Elastizitätsmatrix $\mathbf{D}$ enthalten, welche sich ergibt zu:
 \begin{equation}\label{eq:Elastizitätsmatrix}
 	\mathbf D =
@@ -118,11 +150,11 @@ Des Weiteren ist die Elastizitätsmatrix $\mathbf{D}$ enthalten, welche sich erg
 		0            & 0            & 0            & 0   & 0   & \mu
 	\end{bmatrix}
 \end{equation}
-Die Laméschen Konstanten $\lambda$ und $\mu$ wurden bereits in Gleichung (\ref{eq:lame_konstanten}) eingeführt und enthalten dabei die elastischen Größen.
+Die Laméschen Konstanten $\lambda$ und $\mu$ sind in Gleichung (\ref{eq:lame_konstanten}) gegeben und enthalten die elastischen Größen.
 
 
-Aus der Gleichung (\ref{eq:PvA2}) lassen sich zudem die Beziehungen für die Steifigkeitsmatrix \(\bar{\mathbf{K}}(k_x)\), den nodalen Lastvektor $\tilde{\mathbf p}_{n}$ und die Massenmatrix \(\mathbf{M}\) erkennen. 
-Die Lösung dieser Integrale erfolgt numerisch im nachfolgenden Kapitel (\ref{sec:Numerik}).
+Aus der Gleichung (\ref{eq:PvA2}) lassen sich zudem die Beziehungen für die Steifigkeitsmatrix \(\bar{\mathbf{K}}\), den nodalen Vektor der Belastungen $\tilde{\mathbf p}_{n}$ und die Massenmatrix \(\mathbf{M}\) erkennen. 
+Die numerische Lösungen der Integrale ist in Kapitel (\ref{sec:Numerik}) beschrieben.
 
 Die Gleichung (\ref{eq:PvA2}) lässt sich mithilfe der gelösten Integrale in der für die FEM typischen Formulierung darstellen:
 \begin{equation}\label{eq:PvA_FEM}
@@ -131,64 +163,103 @@ Die Gleichung (\ref{eq:PvA2}) lässt sich mithilfe der gelösten Integrale in de
 	\;=\;
 	\underbrace{\bigl(\bar{\mathbf K}-\omega^{2}\,\bar{\mathbf M}\bigr)}_{\text{dyn.\ Steifigkeitsmatrix}}\,
 	\tilde{\mathbf u}_{n}
-	\;=\; \tilde{\mathbf p}_{n}\,.
+	\;=\; \tilde{\mathbf p}_{n}\,
 \end{equation}
-mit der dynamische Steifigkeitsmatrix $\tilde{\mathbf K}(k_x,\omega)=\bar{\mathbf K}-\omega^{2}\bar{\mathbf M}$.
+mit der dynamische Steifigkeitsmatrix $\tilde{\mathbf K}(k_x,\omega)=\bar{\mathbf K}-\omega^{2}\bar{\mathbf M}$
 
 
-Die Kopplung der beiden Teilsysteme FEM und ITM wird in Kapitel (\ref{cha:Kopplung}) durch die dynamischen Steifigketismatrizen der Berechnungsmethoden durchgeführt. \\
-\cite{Hackenberg2016} formuliert dafür eine Matrix in Blockdarstellung, in deren System die Freiheitsgrade innerhalb des FE-Netzes $\Omega$ von denen an der Kopplungsfläche $\Gamma$ getrennt werden.
-
-Zur besseren Nachvollziehbarkeit im Kopplungskapitel (\ref{cha:Kopplung}) werden die Vektoren und Matrizen mit dem Index FE versehen.
+Die Kopplung der beiden Teilsysteme FEM und ITM wird in Kapitel (\ref{cha:Kopplung}) mithilfe der dynamischen Steifigkeitsmatrizen $\tilde{\mathbf K}$ der Berechnungsmethoden durchgeführt. 
+\cite{Hackenberg2016} formuliert dafür die in Gleichung (\ref{eq:itm_system}) bereits eingeführte allgemeine Beziehung in Blockdarstellung, in deren Matrizen die Freiheitsgrade innerhalb des FE-Netzes $\Omega$ von denen an der Kopplungsfläche $\Gamma_z$ getrennt werden. Diese ergibt sich zu:
 \begin{equation}\label{eq:fe_block_system}
 	\begin{bmatrix}
-		\tilde{\mathbf K}_{\Gamma\Gamma_{\mathrm{FE}}} & \tilde{\mathbf K}_{\Gamma\Omega_{\mathrm{FE}}} \\[6pt]
-		\tilde{\mathbf K}_{\Omega\Gamma_{\mathrm{FE}}} & \tilde{\mathbf K}_{\Omega\Omega_{\mathrm{FE}}}
+		\tilde{\mathbf K}_{\Gamma\Gamma_{\mathrm{FEM}}} & \tilde{\mathbf K}_{\Gamma\Omega_{\mathrm{FEM}}} \\[6pt]
+		\tilde{\mathbf K}_{\Omega\Gamma_{\mathrm{FE}}} & \tilde{\mathbf K}_{\Omega\Omega_{\mathrm{FEM}}}
 	\end{bmatrix}
 	\begin{pmatrix}
-		\tilde{\mathbf u}_{\Gamma_{\mathrm{FE}}} \\[2pt]
-		\tilde{\mathbf u}_{\Omega_{\mathrm{FE}}}
+		\tilde{\mathbf u}_{\Gamma_{\mathrm{FEM}}} \\[2pt]
+		\tilde{\mathbf u}_{\Omega_{\mathrm{FEM}}}
 	\end{pmatrix}
 	=
 	\begin{pmatrix}
-		\tilde{\mathbf P}_{\Gamma_{\mathrm{FE}}} \\[2pt]
-		\tilde{\mathbf P}_{\Omega_{\mathrm{FE}}}
+		\tilde{\mathbf p}_{\Gamma_{\mathrm{FEM}}} \\[2pt]
+		\tilde{\mathbf p}_{\Omega_{\mathrm{FEM}}}
 	\end{pmatrix}
 \end{equation}
-
+Zur besseren Nachvollziehbarkeit der Kopplung in Kapitel (\ref{cha:Kopplung}) werden die Vektoren und Matrizen des FEM-Teilsystems mit dem Index ($\cdot_{\mathrm{FEM}}$) versehen.
 
 
 
 \section{Numerische Implementation}
 \label{sec:Numerik}
 
-Im Implementierungsprozess werden die in Gleichung (\ref{eq:PvA2}) dargestellten Integrale der Steifigkeitsmatrix \(\bar{\mathbf{K}}\) und der Massenmatrix \(\mathbf M\) numerisch gelöst.
+Im Rahmen des Implementierungsprozesses ist eine analytische Lösung der in Gleichung (\ref{eq:PvA2}) dargestellten Integrale der Steifigkeitsmatrix \(\bar{\mathbf{K}}\) und der Massenmatrix \(\mathbf M\) nicht möglich.
+Daher ist die Entwicklung eines numerischen Ansatzes zur Lösung erforderlich.
 
-Für die numerishe Integration existieren mehrere Optionen. Es besteht die Möglichkeit, das Integrationsintervall in n äquisidistant angeordnete Abschnitte zu unterteilen und es anschließend über n+1 Stützstellen zu integrieren. Dieses Verfahren wird auch als Newton-Cotes-Quadratur bezeichnet und wird sowohl in \cite{Klein2003} als auch in \cite{Gross2023} vorgestellt.
+Für die numerische Integration existieren mehrere Optionen. 
+Sofern Randpunkte in die Berechnung miteinbezogen werden, besteht die Möglichkeit, das Integrationsintervall in $n$ äquidistant angeordnete Abschnitte zu unterteilen und es anschließend über $n+1$ Stützstellen zu integrieren. Dieses Verfahren wird als Newton-Cotes-Integration bezeichnet und wird sowohl in \cite{Klein2003} als auch in \cite{Gross2023} vorgestellt.
 
-Im Rahmen der Integration in der FEM findet in der Regel die Gauß´sche Quadraturformel aufgrund ihrer hohen Genauigkeit Anwendung, welche auf einen gewichteten Ansatz und optimierte Stützstellen zurückgreift.
+Im Rahmen der Integration in der FEM findet die Gauß'sche Quadraturformel Anwendung. 
+Im Gegensatz zur Newton-Cotes-Integration werden gewichtete, nicht äquidistant verteilte Stützstellen, auch Gaußpunkte (GP) genannt, herangezogen \citep{Gross2023}.
 
-In der von \cite{Hackenberg2016} entwickelten Implementierung werden dafür vier Gaußpunkte verwendet mit je 2 Gaußpunkte je Koordinatenrichtung
+In der von \cite{Hackenberg2016} entwickelten Implementierung werden hierzu $n_{\mathrm{GP}} = 4$ Gaußpunkte verwendet, wobei jeweils zwei Punkte je Koordinatenrichtung definiert sind, wie in der Abbildung (\ref{fig:GP_Hackenberg}) dargestellt.
+\begin{figure}[H]
+	\hspace*{55mm}
+	%	\centering
+	\includesvg[height=5cm,keepaspectratio]{svg/GP Hackenberg}
+	\caption{Gaußpunkte für viereckige, finite Elemente.}
+	\label{fig:GP_Hackenberg}
+\end{figure}
+Die entsprechenden Stützstellen und Wichtungsfaktoren für $n_{\mathrm{GP}} = 4$ Gaußpunkte, die für die Implementierung viereckiger finiter Elemente von \cite{Hackenberg2016} verwendet werden, sind in der Tabelle (\ref{tab:Gp_Hackenberg}) aufgeführt.\\
+\begin{table}[htb]\centering
+	{\small
+		\setlength{\tabcolsep}{10pt}            % etwas enger
+		\renewcommand{\arraystretch}{1.25}      % moderater Zeilenabstand
+		\begin{tabular}{@{}lccc@{}}            % @{} entfernt Außenränder
+			\firsthline
+			& $\eta$                 & $\zeta$                & $w$ \\\hline
+			$\mathrm{GP}_1$  & $-\tfrac{1}{\sqrt{3}}$   & $-\tfrac{1}{\sqrt{3}}$   & $1$   \\
+			$\mathrm{GP}_2$  & $-\tfrac{1}{\sqrt{3}}$   &  $\tfrac{1}{\sqrt{3}}$     & $1$   \\
+			$\mathrm{GP}_3$  &  $\tfrac{1}{\sqrt{3}}$     & $-\tfrac{1}{\sqrt{3}}$   & $1$   \\
+			$\mathrm{GP}_4$  &  $\tfrac{1}{\sqrt{3}}$     &  $\tfrac{1}{\sqrt{3}}$     & $1$   \\\lasthline
+	\end{tabular}}
+	\caption{Koordinaten und Wichtungsfaktoren der Gaußpunkte für viereckige, finite Elemente \citep{Hackenberg2016}.}
+	\label{tab:Gp_Hackenberg}
+\end{table}
 
+Im Allgemeinen werden für die numerische Integration von nativen Dreiecken alternative Integrationsregeln gewählt. 
+In den Arbeiten von \cite{Gross2023} und \cite{Zienkiewicz2013} wird auf spezifische Gaußpunkte für die numerische Integration von Dreiecken verwiesen, die sich auf die in Gleichung (\ref{eq:tri_shape_linear}) vorgestellten Ansatzfunktionen eines nativen Dreiecks beziehen.
 
+In Kapitel (\ref{sec:degenerierte Dreiecke}) wird beschrieben, dass im Rahmen der vorliegenden Arbeit der Degenerationsansatz mit den Ansatzfunktionen (\ref{eq:shape_functions}) verwendet wird. Wie den Ansatzfunktionen zu entnehmen ist, beziehen sich die implementierten Ansatzfunktionen auf die normierten Koordinaten $\eta,\ \zeta \in [-1,1]$ der viereckigen, finiten Elemente.
+Die Anwendung spezifischer Formeln, die sich auf baryzentrische Koordinaten beziehen, ist demnach nicht zulässig.
 
+In der entwickelten Implementierung wurde daher auf die Gauß'sche Quadratur mit $n_{\mathrm{GP}} = 4$ Gaußpunkten, analog zu der Implementierung von \cite{Hackenberg2016}, zurück gegriffen.
+Die genutzten Gaußpunkte sind in der Abbildung (\ref{fig:GP_Degeneration}) dargestellt und deren Koordinaten $\eta$, $\zeta$ sowie die entsprechenden Wichtungsfaktoren sind bereits in der Tabelle (\ref{tab:Gp_Hackenberg}) aufgeführt.
+\begin{figure}[H]
+	\hspace*{50mm}
+	%	\centering
+	\includesvg[height=5cm,keepaspectratio]{svg/GP Degeneration}
+	\caption{Gaußpunkte für degenerierte, dreieckige, finite Elemente.}
+	\label{fig:GP_Degeneration}
+\end{figure}
 
-Sodass letzendlich die Integrale aus Gleichung (\ref{eq:PvA2}) numerisch lösen lassen zu:
+Die numerische Lösung der in Gleichung (\ref{eq:PvA2}) dargestellten Integralgleichungen erfolgt demnach unter Verwendung der Gauß'schen Quadratur, die in Anhang (\ref{sec:Numerische Integration}) definiert ist, und der in Tabelle (\ref{tab:Gp_Hackenberg})  definierten Gaußpunkte, wie nachfolgend dargestellt:
 \begin{subequations}\label{eq:KM_1D_gp}
 	\begin{align}
 		\mathbf{\bar K}
 		&= \sum_{k=1}^{n_{\mathrm{GP}}}
-		\mathbf{\bar B(k_x,\eta_k,\zeta_k)}^{\mathsf H}\,
+		\mathbf{\bar B}(k_x,\eta_k,\zeta_k)^{\mathsf H}\,
 		\mathbf{D'}\,
-		\mathbf{\bar B(k_x,\eta_k,\zeta_k)}\,
-		\det(\bm J)\,w_k \label{eq:K_1D_gp}\\[0.5ex]
+		\mathbf{\bar B}(k_x,\eta_k,\zeta_k)\,
+		\det(\mathbf{J})\,w \label{eq:K_1D_gp}\\[0.5ex]
 		\mathbf{M}
 		&= \sum_{k=1}^{n_{\mathrm{GP}}}
 		\rho\,
-		\mathbf{N(\eta_k,\zeta_k)}^{\mathsf H}\,
-		\mathbf{N(\eta_k,\zeta_k)}\,
-		\det(\bm J)\,w_k \label{eq:M_1D_gp}
+		\mathbf{N}(\eta_k,\zeta_k)^{\mathsf H}\,
+		\mathbf{N}(\eta_k,\zeta_k)\,
+		\det(\mathbf{J})\,w \label{eq:M_1D_gp}
 	\end{align}
 \end{subequations}
+Die Jacobi-Matrix $\mathbf{J}$ stellt die Transformation und Relation der normierten Elementkoordinaten und globalen Koordinaten herstellt.
 
-Wobei die Jacobi Matrix $\bm J$ die Transformation and Relation der Elementkoordinaten und globalen Koordinaten herstellt
+Der nodale Vektor der Belastungen $\tilde{\mathbf p}_{n}$ wird nicht durch das Integral aus Gleichung (\ref{eq:PvA2}) gelöst.
+Stattdessen ergibt er sich aus dem Vektor der Knotenverschiebungen $\tilde{\mathbf{u}}_{n}$ und der dynamischen Steifigkeitsmatrix $\tilde{\mathbf K}$ nach Gleichung (\ref{eq:PvA_FEM}).

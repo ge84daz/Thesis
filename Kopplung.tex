@@ -4,112 +4,119 @@
 \section{Vorbemerkung}
 \label{sec:Vorbem_Kopplung}
 
-Die Auswertung der Lösung für das Gesamtsystem erfordert eine Kopplung der Berechnungsmethoden ITM und FEM.
-Die Kopplung der beiden Berechnungsmethoden wird durch die Übergangsbedingungen an der Kopplungsfläche $\Gamma$ erreicht, da an diesen Stellen zum einen ein Kräftegleichgewicht herrschen muss und zudem die Verschiebungen identisch sein müssen.
+Die Auswertung der Lösung für das Gesamtsystem erfordert eine Kopplung der Teilsysteme ITM und FEM.
+Die Kopplung der beiden Berechnungsmethoden wird durch die Übergangsbedingungen an der Kopplungsfläche $\Gamma_z$ erreicht, da an diesen Stellen zum einen ein Kräftegleichgewicht herrschen muss und zum anderen die Verschiebungen identisch sein müssen.
 
-Die Bedingungen für die Kopplung werden im Kapitel (\ref{sec:Kopplung}) erläutert. Im Vorfeld ist zu berücksichtigen, dass die Teillösungen sich auf die gleichen Koordinaten beziehen müssen. Daher ist im Vorfeld eine Transformation notwendig, die im Kapitel (\ref{sec:Transformation_Kopplung}) vorgestellt wird.
+Die Übergangsbedingungen der Kopplung werden im Kapitel (\ref{sec:Kopplung}) angewendet. Im Vorfeld ist zu berücksichtigen, dass sich die Teillösungen auf die gleichen Koordinaten beziehen müssen. 
+Die erforderliche Transformation ist in Kapitel (\ref{sec:Transformation_Kopplung}) beschrieben.
+\begin{figure}[H]
+	\hspace*{37mm}
+	%	\centering
+	\includesvg[height=5cm,keepaspectratio]{svg/Kopplung}
+	\caption{ITM und FEM Flächendefinitionen - basiert auf \citep{Freisinger2022}.}
+	\label{fig:Kopplung}
+\end{figure}
 
-...... Hier noch Größere Abbildung von gekoppelten Mesh reinmachen!!!....MT Pfleger 3.12 für mich abzeichnen!s
-
-\section{Transfomation der Lösung des FE-Systems}
+\section{Transfomation der Lösung des FE-Teilsystems}
 \label{sec:Transformation_Kopplung}
-
-Bei der Kopplung ist zu berücksichtigen, dass die hergeleiteten Lösungen sich auf unterschiedliche Koordinatensysteme beziehen sowie in verschiedenen Fourierräumen liegen, wie in der folgenden Übersicht (\ref{tab:Übersichtstabelle}) dargestellt:
+Bei der Kopplung ist zu berücksichtigen, dass die hergeleiteten Lösungen sich auf unterschiedliche Koordinatensysteme beziehen sowie in verschiedene Fourierräume transformiert sind, wie in der Übersicht (\ref{tab:Übersichtstabelle}) dargestellt.
 \begin{table}[htb]
 	\centering
 	\normalsize
 	\begin{tabular}{ccc}
-		\firsthline
+		%\firsthline
 		& \textbf{FEM} & \textbf{ITM} \\\hline
 		Koordinatensystem auf $\Gamma$ & kartesisch $(x,y,z)$ & Zylinderkoordinaten $(x,r,\varphi)$ \\
-		Fourier-Raum                     & zweifachtransformiert $(k_x,\omega)$        & dreifachtransformiert$(k_x,n,\omega)$ \\\lasthline
+		Fourierraum                     & zweifachtransformiert $(k_x,\omega)$        & dreifachtransformiert$(k_x,n,\omega)$ \\\lasthline
 	\end{tabular}
 	\caption{Übersicht der Fourierräume und Koordinatensysteme von FEM und ITM.}
 	\label{tab:Übersichtstabelle}
-\end{table}
-Im Rahmen der Formulierung der genannten Übergangsbedingungen ist es erforderlich, dass sich die Lösungen der Teilsysteme auf identische Größen beziehen.
-Für die Kopplung ist demnach eine Transformation an der Kopplungsoberfläche $\Gamma$ erforderlich. Gemäß \cite{Freisinger_Hackenberg2020} erfolgt die Transformation der Lösung des FEM-Systems in das der ITM.
+\end{table}\\
 
-Zunächst werden die Verschiebungen des FEM-Systems in das Zylinderkoordinatensystem der ITM-Lösung übertragen.
-Dafür greift \cite{Fruehe2010} erneut die Transformationsmatrix $\bm{\beta}$ aus Gleichung (\ref{eq:Transforationsmatrix}) auf und formuliert den Wechsel der Koordinatensysteme von kartesisch zu Zylinderkoordinaten wie folgt:
+Die Übergangsbedingungen müssen folglich so formuliert werden, dass sich die Lösungen der Teilsysteme auf identische Größen beziehen.
+Für die Kopplung sind demnach Transformationen an der Kopplungsoberfläche $\Gamma$ erforderlich. Gemäß \cite{Freisinger_Hackenberg2020} erfolgt die Transformation der Lösung des FEM-Teilsystems in das der ITM.
+
+Zunächst werden die Verschiebungen des FEM-Teilsystems in das Zylinderkoordinatensystem transformiert.
+Dafür greift \cite{Fruehe2010} erneut die Transformationsmatrix $\boldsymbol{\beta}$ aus Gleichung (\ref{eq:Transforationsmatrix}) auf und formuliert den Wechsel der Koordinatensysteme von kartesisch zu Zylinderkoordinaten wie folgt:
 \begin{equation}\label{eq:u_FE_Zylinder}
-	\tilde{\mathbf u}_{\Gamma_{\mathrm{FE,k}}}
-	= \mathbf T_{1}\,
-	\tilde{\mathbf u}_{\Gamma_{\mathrm{FE,z}}}
+	\tilde{\mathbf u}_{\Gamma,\mathrm{FEM,k}}}
+	= \mathbf T_{1}\cdot
+	\tilde{\mathbf u}_{\Gamma,\mathrm{FEM,z}}
 \end{equation}
-Dabei werden die Größen im kartesischen Koordinatensystem fortfolgend mit k bezeichnet, während das Zylinderkoordinatensystem mit z gekennzeichnet wird.
-Die Einträge der Matrix $\mathbf{T_1}$ sind im Anhang (\ref{sec:Koordinatentransformationsmatrix}) aufgeführt.
+Die Einträge der Matrix $\mathbf{T_1}$ ergeben sich aus der transponierten Transformationsmatrix $\boldsymbol{\beta}^{\mathsf T}$ und sind im Anhang (\ref{sec:Koordinatentransformationsmatrix}) aufgeführt.
 
-Im nächsten Schritt ist es erforderlich, $\tilde{\mathbf u}_{\Gamma_{\mathrm{FE,z}}}$ in den selben Fourierraum zu übertragen. Zu diesem Zweck wird eine Fourier-Reihenentwicklung bezüglich des Umfangs der zylindrischen Kopplungsfläche $\Gamma$ durchgeführt \citep{Hackenberg2016}:
+Im nächsten Schritt ist es erforderlich, $\tilde{\mathbf u}_{\Gamma_{\mathrm{FE,z}}}$ in den selben Fourierraum zu übertragen. Zu diesem Zweck wird eine Fourierreihe bezüglich des Umfangs der zylindrischen Kopplungsfläche $\Gamma$ entwickelt \citep{Hackenberg2016}:
 \begin{equation}\label{eq:u_FE_Fourier}
-	\tilde{\mathbf u}_{\Gamma_{\mathrm{FE,z}}}
-	= \mathbf T_{2}\,
-	\hat{\mathbf u}_{\Gamma_{\mathrm{FE,z}}}
+	\tilde{\mathbf u}_{\Gamma,\mathrm{FEM,z}}
+	= \mathbf T_{2}\cdot
+	\hat{\mathbf u}_{\Gamma,\mathrm{FEM,z}}
 \end{equation}
-Wie bereits in den vorangegangenen Kapiteln aufgeführt, werden zweifach fouriertransformierte Größen mit \(\tilde{\cdot}\) bezeichnet,
-während dreifach fouriertransformierte Größen mit \(\widehat{\cdot}\) gekennzeichnet werden.
-Die konkreten Einträge der Matrix \(\mathbf T_{2}\) sind erneut im Anhang (\ref{sec:Fouriertransformationsmatrix}) zu finden.
+Die Einträge der Matrix \(\mathbf T_{2}\) sind im Anhang (\ref{sec:Fouriertransformationsmatrix}) aufgeführt.
 
-Zusammenfassend lässt sich festhalten, dass durch die Anwendung der Transformationsmatrix \(\mathbf T\) eine Transformation auf einheitliche Koordinaten \\$(k_x,\ r,\ n,\ \omega)$ erzielt werden kann.
+Zusammenfassend lässt sich festhalten, dass durch die Anwendung der Transformationsmatrix \(\mathbf T\) eine Transformation auf einheitliche Koordinaten $(k_x,\ r,\ n,\ \omega)$ erzielt wird.
 \begin{equation}\label{eq:tilde_u_FE}
-	\tilde{\mathbf u}_{\Gamma,\mathrm{FE},k}
-	= \mathbf T_{1}\,\mathbf T_{2}\,\hat{\mathbf u}_{\Gamma,\mathrm{FE},z}
-	= \mathbf T\,\hat{\mathbf u}_{\Gamma,\mathrm{FE},z}\,.
+	\tilde{\mathbf u}_{\Gamma,\mathrm{FEM},k}
+	= \mathbf T_{1}\cdot\mathbf T_{2}\cdot\hat{\mathbf u}_{\Gamma,\mathrm{FEM},z}
+	= \mathbf T\cdot\hat{\mathbf u}_{\Gamma,\mathrm{FEM},z}\,
 \end{equation}
-
-Analog dazu erfolgt ebenfalls die Transformation des Lastvektor in die Koordinaten der ITM-Lösung $(k_x,\ r,\ n,\ \omega)$ mifhilfe der Transformationsmatrix \(\mathbf T\):
+Analog dazu erfolgt die Transformation des Vektors der Belastungen $\tilde{\mathbf p}_{\Gamma,\mathrm{FEM,k}}$ in die Koordinaten des ITM-Teilsystems $(k_x,\ r,\ n,\ \omega)$ mifhilfe der Transformationsmatrix \(\mathbf T\) wie folgt:
 \begin{equation}\label{eq:tildeP_FE}
-	\tilde{\mathbf P}_{\Gamma,\mathrm{FE,k}}
-	= \mathbf T\,
-	\hat{\mathbf P}_{\Gamma,\mathrm{FE,z}} \,.
+	\tilde{\mathbf p}_{\Gamma,\mathrm{FEM,k}}
+	= \mathbf T\cdot
+	\hat{\mathbf p}_{\Gamma,\mathrm{FEM,z}} \,
 \end{equation}
 
 
 
-\section{Kopplung}
+\section{Kopplung der Teilsysteme}
 \label{sec:Kopplung}
 
-Nachdem sich die Lösungen der Teilsysteme FEM und ITM nun auf die gleichen Koordinatensysteme beziehen, können im weiteren Verlauf die zu Beginn dieses Kapitels (\ref{sec:Vorbem_Kopplung}) angegebenen Kopplungsbedingungen angewendet werden.
+Nachdem sich die Lösungen der Teilsysteme FEM und ITM nun auf die gleichen Koordinaten $(k_x,\ r,\ n,\ \omega)$ beziehen, können im weiteren Verlauf die Kopplungsbedingungen angewandt werden.
 
-Einerseits wird gefordert, dass die Verschiebungen der Teilsysteme an der Kopplungsfläche identisch sind. Daraus ergibt sich die erste Kopplungsbedinung zu:
+Die erste Kopplungsbedingung fordert, dass die Verschiebungen $\hat{\mathbf u}_{\Gamma}$ der Teilsysteme an der Kopplungsfläche $\Gamma$ identisch sind. Diese Kopplungsbedingung ergibt sich demnach zu:
 \begin{equation}\label{eq:Kopplbed_u}
-	\hat{\mathbf u}_{\Gamma_{\mathrm{FEM}}}
-	= \hat{\mathbf u}_{\Gamma_{\mathrm{ITM}}}\,.
+	\hat{\mathbf u}_{\Gamma,\mathrm{FEM}}
+	= \hat{\mathbf u}_{\Gamma,\mathrm{ITM}}\,
 \end{equation}
-Des Weiteren ist es essenziell, dass an der Kopplungsfläche $\Gamma$ die auftretenden Kräfte im einem Gleichgewichtszustand sind. Die Lasten der ITM und FEM müssen mit einer potenziellen Randlast auf der Kopplungsfläche $\Gamma$ im Gleichgewicht stehen. Die zweite Kopplungsbedingung lautet daher wie folgt: 
+Darüber hinaus wird gefordert, dass die auftretenden Kräfte der Teillösungen sich im Gleichgewichtszustand mit potenziellen Randlasten an der Kopplungsfläche $\Gamma$ befinden. Die zweite Kopplungsbedingung lässt sich demnach wie folgt formuliern:
+%Des Weiteren ist es essenziell, dass an der Kopplungsfläche $\Gamma$ die auftretenden Kräfte im einem Gleichgewichtszustand sind. Die Lasten der ITM und FEM müssen mit einer potenziellen Randlast auf der Kopplungsfläche $\Gamma$ im Gleichgewicht stehen. Die zweite Kopplungsbedingung lautet daher wie folgt: 
 \begin{equation}\label{eq:Kopplbed_p}
-	\hat{\mathbf P}_{\Gamma,\mathrm{ITM}}
-	+ \frac{1}{\mathrm d s}\,\hat{\mathbf P}_{\Gamma,\mathrm{FE}}
-	= \hat{\mathbf P}_{\Gamma}\,.
+	\hat{\mathbf p}_{\Gamma,\mathrm{ITM}}
+	+ \frac{1}{\mathrm d s}\,\hat{\mathbf p}_{\Gamma,\mathrm{FEM}}
+	= \hat{\mathbf p}_{\Gamma}\,
 \end{equation}
-Der Nenner $\mathrm{ds}$ wird dabei verwendet, um die knotenweisen FEM-Lasten in stetige Spannungen entlang der Kopplungsfläche umzuwandeln \cite{Hackenberg2016}.
+Um die knotenweisen FEM-Lasten in stetige Spannungen entlang der Kopplungsfläche umzuwandeln, wird der Vektor der Knotenlasten des FEM-Teilsystems durch die Elementlänge $ds$ geteilt.
 
-\cite{Hackenberg2016} kombiniert die Koplungsbedingungen (\ref{eq:Kopplbed_u}) sowie (\ref{eq:Kopplbed_p}) mit den Lösungen der Teilsysteme in den Gleichungen (\ref{eq:itm_block_system_braced}) und (\ref{eq:fe_block_system}), sodass das folgende Blocksystem resultiert:
+
+\cite{Hackenberg2016} kombiniert die Koplungsbedingungen (\ref{eq:Kopplbed_u}) und (\ref{eq:Kopplbed_p}) mit den Lösungen der Teilsysteme in den Gleichungen (\ref{eq:itm_block_system_braced}) und (\ref{eq:fe_block_system}), sodass das folgende System in Blockdarstellung resultiert:
 \begin{equation}\label{eq:gekoppelt}
 	\begin{bmatrix}
-		\hat{\mathbf K}_{\Lambda\Lambda_{\mathrm{ITM}}} &
-		\hat{\mathbf K}_{\Lambda\Gamma_{\mathrm{ITM}}}   &
+		\hat{\mathbf K}_{\Lambda\Lambda,\mathrm{ITM}} &
+		\hat{\mathbf K}_{\Lambda\Gamma,\mathrm{ITM}}   &
 		0 \\[6pt]
-		\hat{\mathbf K}_{\Gamma\Lambda_{\mathrm{ITM}}}   &
-		\hat{\mathbf K}_{\Gamma\Gamma_{\mathrm{ITM}}}
-		+ \dfrac{1}{ds}\,\mathbf T^{-1}\,\tilde{\mathbf K}_{\Gamma\Gamma_{\mathrm{FE}}}\,\mathbf T &
-		\dfrac{1}{ds}\,\mathbf T^{-1}\,\tilde{\mathbf K}_{\Gamma\Omega_{\mathrm{FE}}} \\[6pt]
+		\hat{\mathbf K}_{\Gamma\Lambda,\mathrm{ITM}}   &
+		\hat{\mathbf K}_{\Gamma\Gamma,\mathrm{ITM}}
+		+ \dfrac{1}{\mathrm d s}\,\mathbf T^{-1}\,\tilde{\mathbf K}_{\Gamma\Gamma,\mathrm{FEM}}\,\mathbf T &
+		\dfrac{1}{\mathrm d s}\,\mathbf T^{-1}\,\tilde{\mathbf K}_{\Gamma\Omega,\mathrm{FEM}} \\[6pt]
 		0 &
-		\tilde{\mathbf K}_{\Omega\Gamma_{\mathrm{FE}}}\,\mathbf T &
-		\tilde{\mathbf K}_{\Omega\Omega_{\mathrm{FE}}}
+		\tilde{\mathbf K}_{\Omega\Gamma,\mathrm{FEM}}\,\mathbf T &
+		\tilde{\mathbf K}_{\Omega\Omega,\mathrm{FEM}}
 	\end{bmatrix}
 	\begin{pmatrix}
-		\hat{\mathbf u}_{\Lambda_{\mathrm{ITM}}}\\[2pt]
+		\hat{\mathbf u}_{\Lambda,\mathrm{ITM}}\\[2pt]
 		\hat{\mathbf u}_{\Gamma}\\[2pt]
-		\tilde{\mathbf u}_{\Omega_{\mathrm{FE}}}
+		\tilde{\mathbf u}_{\Omega,\mathrm{FEM}}
 	\end{pmatrix}
 	=
 	\begin{pmatrix}
-		\hat{\mathbf P}_{\Lambda_{\mathrm{ITM}}}\\[2pt]
-		\hat{\mathbf P}_{\Gamma}\\[2pt]
-		\tilde{\mathbf P}_{\Omega_{\mathrm{FE}}}
-	\end{pmatrix}.
+		\hat{\mathbf p}_{\Lambda,\mathrm{ITM}}\\[2pt]
+		\hat{\mathbf p}_{\Gamma}\\[2pt]
+		\tilde{\mathbf p}_{\Omega,\mathrm{FEM}}
+	\end{pmatrix}
 \end{equation}
-Das Resultat ist ein System, das Unbekannte auf der Halbraumoberfläche $\Lambda$, der gemeinsamen Kopplungfläche $\Gamma$ sowie im Inneren des FE-Feldes $\Omega$ enthält.
+Das Resultat ist ein System, das die beiden Teilsysteme ITM und FEM miteinander vereint. 
+Die Größen werden in Blockdarstellung getrennt auf der Halbraumoberfläche $\Lambda$, der gemeinsamen Kopplungfläche $\Gamma$ sowie dem Inneren des FE-Bereichs $\Omega$ dargestellt.
 
-Um eine Endlösung des gekoppelten Systems zu erhalten, müssen die Größen mittels Inverser Fouriertransformation aus dem Fourierraum in den Originalraum zurückgeführt werden. Erst dann sind die Teilsysteme final auswertbar gekoppelt.
+Um eine auswertbare Endlösung des gekoppelten Systems zu erhalten, müssen die Größen mittels Fourierrücktransformation nach der Definition in der Gleichung (\ref{eq:invfouriertransformation}) aus dem Fourierraum in den Originalraum rücktransformiert werden.
+
+%Um eine Endlösung des gekoppelten Systems zu erhalten, müssen die Größen mittels Inverser Fouriertransformation aus dem Fourierraum in den Originalraum zurückgeführt werden. Erst dann sind die Teilsysteme final auswertbar gekoppelt.

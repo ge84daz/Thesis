@@ -1,4 +1,4 @@
-\begin{thebibliography}{6}
+\begin{thebibliography}{0}
 % this bibliography was produced with the style dinat.bst v2.5
 \makeatletter
 \newcommand{\dinatlabel}[1]%
@@ -6,40 +6,5 @@
 \makeatother
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 \expandafter\ifx\csname url\endcsname\relax\def\url#1{\texttt{#1}}\fi
-
-\bibitem[Freisinger(2022)]{Freisinger2022}
-\dinatlabel{Freisinger 2022} \textsc{Freisinger}, Julian~M.:
-\newblock \emph{Harmonic and transient three-dimensional
-  Structure-Soil_streucture_interaction applying a coupled ITM-FEM approach},
-  Ph.D. thesis, 2022
-
-\bibitem[Frühe(2010)]{Fruehe2010}
-\dinatlabel{Frühe 2010} \textsc{Frühe}, Georg:
-\newblock \emph{Überlagerung von Grundlösungen in der Elastodynamik zur
-  Behandlung der dynamischenTunnel-Boden-Bauwerk-Interaktion}, Ph.D. thesis,
-  2010
-
-\bibitem[Hackenberg(2016)]{Hackenberg2016}
-\dinatlabel{Hackenberg 2016} \textsc{Hackenberg}, Manuela:
-\newblock \emph{A Coupled Integral Transform Method - Finite Element Method
-  Approach to Model the Soil-Structure-Interaction}, Ph.D. thesis, 2016
-
-\bibitem[Haupt(1986)]{Haupt1986}
-\dinatlabel{Haupt 1986} \textsc{Haupt}, Wolfgang:
-\newblock Bodendynamik: Grundlagen und Anwendung.
-\newblock
-\newblock (1986)
-
-\bibitem[Lamé(1852)]{Lame1852}
-\dinatlabel{Lamé 1852} \textsc{Lamé}, Gabriel:
-\newblock Lecons sur la Théorie Mathématique de l’Elasticité des Corps
-  Solides.
-\newblock
-\newblock (1852)
-
-\bibitem[Müller(2007)]{Mueller2007}
-\dinatlabel{Müller 2007} \textsc{Müller}, Kai:
-\newblock \emph{Dreidimensionale dynamische Tunnel-Halbraum-Interaktion}, Ph.D.
-  thesis, 2007
 
 \end{thebibliography}

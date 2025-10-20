@@ -5,61 +5,53 @@ The style file: bmvorlagen/dinat_e.bst
 A level-1 auxiliary file: deck.aux
 A level-1 auxiliary file: abstract.aux
 A level-1 auxiliary file: erkl.aux
-A level-1 auxiliary file: einleit.aux
-A level-1 auxiliary file: Grundgleichungen.aux
-A level-1 auxiliary file: ITM.aux
-A level-1 auxiliary file: anhang.aux
+A level-1 auxiliary file: symbole.aux
+I found no \citation commands---while reading file a_main_thesis.aux
+I found no \bibdata command---while reading file a_main_thesis.aux
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
-Database file #1: Literaturverzeichnis.bib
-Warning--I didn't find a database entry for "Fruhe2010"
-Warning--I didn't find a database entry for "Long1967"
-Warning--empty school in Freisinger2022
-Warning--empty school in Fruehe2010
-Warning--empty school in Hackenberg2016
-Warning--empty school in Mueller2007
-You've used 6 entries,
+You've used 0 entries,
             3552 wiz_defined-function locations,
-            835 strings with 6878 characters,
-and the built_in function-call counts, 3284 in all, are:
-= -- 415
-> -- 42
-< -- 60
-+ -- 73
-- -- 19
-* -- 252
-:= -- 569
-add.period$ -- 2
-call.type$ -- 6
-change.case$ -- 24
-chr.to.int$ -- 6
-cite$ -- 10
-duplicate$ -- 94
-empty$ -- 245
-format.name$ -- 36
-if$ -- 674
+            796 strings with 6024 characters,
+and the built_in function-call counts, 34 in all, are:
+= -- 0
+> -- 0
+< -- 0
++ -- 0
+- -- 0
+* -- 2
+:= -- 8
+add.period$ -- 0
+call.type$ -- 0
+change.case$ -- 0
+chr.to.int$ -- 0
+cite$ -- 0
+duplicate$ -- 0
+empty$ -- 1
+format.name$ -- 0
+if$ -- 1
 int.to.chr$ -- 0
 int.to.str$ -- 1
-missing$ -- 2
-newline$ -- 38
-num.names$ -- 24
-pop$ -- 42
+missing$ -- 0
+newline$ -- 10
+num.names$ -- 0
+pop$ -- 0
 preamble$ -- 1
-purify$ -- 24
+purify$ -- 0
 quote$ -- 0
-skip$ -- 133
+skip$ -- 1
 stack$ -- 0
-substring$ -- 309
-swap$ -- 10
-text.length$ -- 6
+substring$ -- 0
+swap$ -- 0
+text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 66
-warning$ -- 4
-while$ -- 36
+type$ -- 0
+warning$ -- 0
+while$ -- 0
 width$ -- 0
-write$ -- 61
-(There were 6 warnings)
+write$ -- 9
+(There were 2 error messages)

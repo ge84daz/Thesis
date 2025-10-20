@@ -1,0 +1,33 @@
+\begin{thebibliography}{4}
+% this bibliography was produced with the style dinat.bst v2.5
+\makeatletter
+\newcommand{\dinatlabel}[1]%
+{\ifNAT@numbers\else\NAT@biblabelnum{#1}\hspace{2\labelsep}\fi}
+\makeatother
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\expandafter\ifx\csname url\endcsname\relax\def\url#1{\texttt{#1}}\fi
+
+\bibitem[Müller(1989)]{Mueller1989}
+\dinatlabel{Müller 1989} \textsc{Müller}, Gerhard:
+\newblock \emph{Ein Verfahren zur Erfassung der Fundament-Boden Wechselwirkung
+  unter Einwirkung periodischer Lasten}, Technische Universität München, Ph.D.
+  thesis, 1989
+
+\bibitem[Stroud and Secrest(1966)]{Stroud1966}
+\dinatlabel{Stroud and Secrest 1966} \textsc{Stroud}, A.~H.~; \textsc{Secrest},
+  Don:
+\newblock \emph{Gaussian Quadrature Forulas}.
+\newblock Prentice Hall, 1966
+
+\bibitem[Sturm(2010)]{Sturm2010}
+\dinatlabel{Sturm 2010} \textsc{Sturm}, Thomas~F.:
+\newblock \emph{LaTeX - Einführung in das Textsatzsystem}.
+\newblock 7.
+\newblock Regionales Rechenzentrum für Niedersachsen, 2010
+
+\bibitem[Unknown(2018)]{Unknown2018}
+\dinatlabel{Unknown 2018} \textsc{Unknown}:
+\newblock \emph{Me Myself and I}.
+\newblock Unknown, 2018
+
+\end{thebibliography}

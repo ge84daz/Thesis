@@ -1,0 +1,29 @@
+\chapter{Fazit}
+\label{cha:Schluss}
+
+In der vorliegenden Arbeit erfolgt die Weiterentwicklung der bestehenden Implementierung eines gekoppelten ITM-FEM-Ansatzes aus den Dissertationen von \cite{Hackenberg2016} und \cite{Freisinger2022}. 
+Auf Basis der bestehenden Implementierung wird das FE-Netz von viereckigen auf dreieckige Elemente umgestellt. Der herangezogene Ansatz beruht dabei nicht auf nativen Dreiecken, sondern auf einer Degeneration viereckiger in dreieckige Elementen. 
+
+Im Rahmen der Verifikation der entwickelten Implementierung wurden validierte Referenzlösungen herangezogen. 
+Einerseits werden Abweichungen zur bestehenden Implementierung mit viereckigen Elementen verglichen, andererseits wird die semi-analytische Lösung eines homogenen Halbraums herangezogen.
+In den verschiedenen Verifikationsfällen wurden gute bis sehr gute Annäherungen an die Referenzlösungen festgestellt, weshalb die entwickelte Implementierung als gelungen bewertet werden kann. 
+Die Verwendung eines alternativen FE-Netzes ist demnach eine mögliche Option, um komplexere Geometrien, wie etwa einen Tunnel, zu realisieren, ohne dabei signifikante Einbußen an Präzision zu verzeichnen.
+
+Trotz der überwiegend positiven Ergebnisse sind auch Limitationen und kritische Aspekte der entwickelten Implementierung zu berücksichtigen. 
+Ein besonderer Fokus sollte auf den gewählten Degenerationsansatz gelegt werden. Zur numerischen Integration wird eine Gauß'sche Quadratur verwendet, die ursprünglich für viereckige Elemente konzipiert ist. 
+Das kann dazu führen, dass Gaußpunkte außerhalb des dreieckigen Elements liegen, was wiederum zu Problemen im Integrationsprozess führen könnte. 
+In der vorliegenden Arbeit wird diese potenzielle Fehlerquelle in Kauf genommen und nicht weiter behandelt. 
+Die in den durchgeführten Verifizierungsfällen eingesetzte numerische Integration zeigt keine offensichtlichen Abweichungen.
+Es besteht jedoch die Möglichkeit, dass ein solcher Ansatz bei komplexeren Geometrien oder feineren Netzen numerische Instabilitäten verursacht.
+Die Übertragung einer Integrationsmethode von viereckigen auf dreieckige Elemente stellt somit eine potenzielle Fehlerquelle dar, die in zukünftigen Arbeiten oder Implementierungen vermieden und korrigiert werden sollte.
+
+Auf Basis der entwickelten Implementierung ergeben sich verschiedene Perspektiven für die Weiterentwicklung des gekoppelten ITM-FEM-Ansatzes. 
+Es empfiehlt sich, vorrangig eine Überarbeitung der numerischen Integrationsmethode vorzunehmen oder alternativ die Generierung dreieckiger Elemente durch native Dreiecke zu ermöglichen. 
+Darüber hinaus könnte eine lokale Verfeinerung des Netzes in relevanten Bereichen zu einer Verbesserung der Auflösung führen, ohne dass der Rechenaufwand für das gesamte Modell unverhältnismäßig erhöht werden müsste. 
+Anschließend besteht die Möglichkeit, parametrische Untersuchungen durchzuführen, um den Einfluss lokaler Netzverfeinerungen zu ermitteln.
+Auch eine Erweiterung des Modells um höherwertige dreieckige Elemente ist denkbar, um die Genauigkeit weiter zu steigern.
+In diesem Ansatz werden die dreieckigen Elemente nicht linear durch drei Knoten beschrieben, sondern parabolisch durch sechs oder kubisch durch neun Knoten je Element. Dieser Ansatz ist in den Arbeiten von cite{Zienkiewicz2013} und \cite{Klein2003} beschrieben. 
+
+ Zusammenfassend lässt sich festhalten, dass die vorliegende Arbeit eine Grundlage für weiterführende Arbeiten im Bereich der Wellenausbreitung in einem Halbraum mit zylindrischem Hohlraum schafft. 
+ Die gewonnenen Erkenntnisse und die entwickelte Implementierung können aufgegriffen und weiterentwickelt werden. 
+ Dies kann dazu dienen, theoretische Aspekte der Implementierung zu verfeinern oder in praxisorientierten Parameterstudien das Einsatzpotenzial der entwickelten Implementierung zu analysieren.

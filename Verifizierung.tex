@@ -1,0 +1,329 @@
+% !TeX root = a_main_thesis.tex
+\chapter{Verifizierung}
+\label{cha:Verifizierung}
+
+\section{Vorbemerkung}
+\label{sec:Vorbem_Verifizierung}
+Um eine korrekte Implementierung sicherzustellen, ist eine Verifizierung des in den vorangegangenen Kapiteln beschriebenen ITM-FEM-Ansatzes zur Untersuchung eines homogenen Halbraums mit zylindrischem Hohlraum erforderlich.
+
+Zu diesem Zweck werden validierte Referenzlösungen herangezogen, die im Rahmen der Dissertation von \cite{Freisinger2022} entwickelt wurden. In der vorliegenden Arbeit erfolgt die Verifizierung anhand des gegebenen ITM-FEM-Ansatzes, der den zylindrischen Hohlraum mit viereckigen, finiten Elementen beschreibt, sowie eines ITM-Ansatzes, der einen homogenen Halbraum modelliert.
+
+Die Verifizierung der entwickelten Implementierung erfolgt anhand drei unterschiedlicher Systeme. %der Lösung von drei voneinander unabhängigen Belastungs- und Systemfällen.
+Im Rahmen des ersten Falls werden in Kapitel (\ref{sec:verification_c1}) die Auswirklungen einer Belastung auf der Halbraumoberfläche $\Lambda$ im FE-Bereich $\Omega$ untersucht.
+Der zweite Fall verifiziert in Kapitel (\ref{sec:verification_c2}) die entwickelte Implementation für eine Belastung innerhalb des FE-Bereichs $\Omega$.
+In Kapitel (\ref{sec:verification_c3}) wird die Verifizierung des Sonderfalls eines Grabens, also des halben FE-Bereichs $\Omega$ an der Halbraumoberfläche, unter einer Belastung an der Halbraumoberfläche $\Lambda$ durchgeführt.
+
+
+Im Rahmen der vorliegenden Arbeit erfolgt die Auswertung der entwickelten Implementierung für eine harmonische Belastung der Frequenz $f = 30\ \mathrm{Hz}$. 
+Darüber hinaus werden die Materialparameter, die in der Tabelle (\ref{tab:Material_Parameter}) aufgeführt sind, herangezogen. Diese wurden im Rahmen der gegebenen Implementierung von \cite{Freisinger2022} vordefiniert.
+% sowie auf die vordefinierten Materialparameter aus der Arbeit von \cite{Freisinger2022} zurückgegriffen, die in der folgenden Tabelle (\ref{tab:Material_Parameter}) aufgeführt sind.
+\begin{table}[htb]\centering\normalsize
+	{\renewcommand{\arraystretch}{1.25} % <-- Zeilenabstandfaktor
+		\begin{tabular}{lcccccc}
+			\firsthline
+			& $E\;(\mathrm{N}/\mathrm{m}^{2})$ & $\nu\;(-)$ & $\rho\;(\mathrm{kg}/\mathrm{m}^{3})$ & $c_s\;(\mathrm{m}/\mathrm{s})$ & $c_r\;(\mathrm{m}/\mathrm{s})$ & $\lambda_r\;(\mathrm{m})$ \\\hline
+			\texttt{soft\_v01}  & $2,6\times10^{7}$ & 0,3 & 2000 & 70,7 & 65,0 & 2,17 \\
+			\texttt{stiff\_v01} & $2,6\times10^{8}$ & 0,3 & 1600 & 250,0 & 230,0 & 7,67 \\\lasthline
+	\end{tabular}}
+	\caption{Herangezogene Bodenparameter.}	\label{tab:Material_Parameter}
+\end{table}
+\\Zur Vergleichbarkeit der Ergebnisse wird der Tanimoto-Koeffizient $T$ herangezogen, wie bereits in den Dissertationen von \cite{Hackenberg2016} und \cite{Freisinger2022}. Dieser Wert vergleicht die beiden Vektoren $\mathbf{a}$ und $\mathbf{b}$ über die $n$ Elemente innerhalb des betrachteten Intervalls. Die Berechnung wird wie folgt durchgeführt \citep{Willett1998}:
+\begin{equation}\label{eq:tanimoto}
+	T \;=\; 
+	\frac{\displaystyle \sum_{i=1}^{n} a_i\,b_i}
+	{\displaystyle \sum_{i=1}^{n} a_i^{2}
+		\;+\; \sum_{i=1}^{n} b_i^{2}
+		\;-\; \sum_{i=1}^{n} a_i\,b_i } \,
+\end{equation}
+Es wird ein Wert von $T = 1$ bei identischen Vektoren erwartet. Im Rahmen der Verifikation sollte sich für die Abweichungen der Verschiebungen folglich ein Tanimoto-Koeffizient von $T \approx 1$ ergeben.
+
+
+
+
+
+\section{Fall 1: Belastung auf der Halbraumoberfläche}
+\label{sec:verification_c1}
+
+Im ersten Verifizierungsfall werden die Abweichungen infolge einer Belastung auf der Halbraumoberfläche $\Lambda$ analysiert. Eine Darstellung der gewählten Systemparameter ist in Abbildung (\ref{fig:Refsystem_v1_hs_cyl}) visualisiert.
+\begin{figure}[H]
+	\hspace*{35mm}
+	%	\centering
+	\includesvg[height=6cm,keepaspectratio]{svg/verification_c1_system_hs_cyl}
+	\caption{Gewählte Systemparameter zur Verifikation mit viereckigen Elementen im ersten Fall - basiert auf \cite{Freisinger2022}.}
+	\label{fig:Refsystem_v1_hs_cyl}
+\end{figure}
+Die quadratische Belastung weist Breiten von $b_x = b_y = 2\ \mathrm{m}$ auf und die Belastungsamplitude wurde zu $1 \mathrm{N}/\mathrm{m}^{2}$ gewählt.
+Darüber hinaus wurde eine Gesamtausdehnung des ITM-Teilsystems zu $B_x = B_y = 128\ \mathrm{m}$ und $N_x = N_y = 2^{9}$ Stützstellen gewählt.
+
+Es wurde der Radius $R = 4\ \mathrm{m}$ gewählt und der zylindrische Hohlraum aus der Mitte heraus um $y_{_{\mathrm{T}}} = 8\ \mathrm{m}$ verschoben. Zudem wurde der Mittelpunkt auf eine Tiefe von $H = 8\ \mathrm{m}$ eingebunden.
+
+Der erste Verifizierungsfall erfolgt mit den den Materialparametern \texttt{stiff\_v01}.
+
+
+\subsubsection{Einfluss der Knotenanzahl auf der Kopplungsfläche $\Gamma$}
+Um den Einfluss der Knoten $N_{\varphi}$ auf der umlaufenden Zylinderkopplungsfläche $\Gamma$ auszuwerten, werden zunächst die Ergebnisse der FE-Netze mit viereckigen und dreieckigen Elementen für $N_{\varphi} = 32$ und $64$ Knoten auf der Mittellinie des FE-Bereichs $\Omega$ analysiert.
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{0.49\linewidth}
+		\centering
+		\includesvg[width=\linewidth]{svg/verification_c1_32nodes_svg_tex}
+	%	\subcaption{$|u_z(y)|$ für $N_{\phi} = 32$ Knoten}
+		\label{fig:c1_a}
+	\end{subfigure}\hfill
+	\begin{subfigure}{0.49\linewidth}
+		\centering
+		\includesvg[width=\linewidth]{svg/verification_c1_left_svg_tex}
+	%	\subcaption{$|u_z(y)|$ für $N_{\phi} = 64$ Knoten}
+		\label{fig:c1_b}
+	\end{subfigure}
+	\caption{Abweichungen $|\bar{u}_z(y)|$ der dreieckigen Elemente (\legThree) zu der Referenzlösung viereckige Elemente (\legFour) bei unterschiedlicher Diskretisierung $N_{\varphi} = 32$ (links) und $N_{\varphi} = 64$ (rechts).}
+	\label{fig:c1_Knoten}
+\end{figure}
+\begin{table}[htb]
+	\centering
+	\normalsize
+	{\renewcommand{\arraystretch}{1.15}
+		\begin{tabular}{ccccc}
+			\firsthline
+			$N_{\varphi}$ & Maximaler Wert & Maximale Abweichung & Tanimoto-Koeffizient $T$ \\\hline
+			$ 32 $ & $ 3,90\cdot10^{-10}$ & $6,07\cdot10^{-12}$ & 0,99 \\
+			$ 64 $ & $3,86\cdot10^{-10}$ & $1,77\cdot10^{-12}$ & 1.00 \\\lasthline
+	\end{tabular}}
+	\caption{Abweichungen $|\bar{u}_z(y)|$ zur Referenzlösung viereckige Elemente bei unterschiedlicher Diskretisierung $N_\varphi$ im ersten Verifizierungsfall.}
+	\label{tab:Fehlermessung_c1}
+\end{table}
+Die resultierenden vertikalen Verschiebungen $|\bar{u}_z(y)|$ für eine unterschiedliche Anzahl von Knoten $N_{\varphi}$ werden in Abbildung (\ref{fig:c1_Knoten}) dargestellt. 
+Aus den Graphen ist erkennbar, dass die Angleichung an die Referenzlösung bei gewählten $N_{\varphi} = 64$ Knoten eine höhere Ähnlichkeit aufweist als die Lösung bei $N_{\varphi} = 32$ Knoten.
+Begründen lässt sich diese Beobachtung durch die eine präzisere Approximation, da eine größere Anzahl von Knoten bei konstantem Radius $R = 4 m$ zu einer genaueren Diskretisierung führt. 
+Diese Beobachtung spiegelt sich ebenfalls in den aufgeführten Werten der Tabelle (\ref{tab:Fehlermessung_c1}) wider, da sowohl die maximale Abweichung, als auch der Tanimoto-Koeffizient $T$ größere Abweichungen aufweisen.
+
+Über diese begründbaren Abweichungen hinaus kann eine hohe Übereinstimmung zwischen der Lösung für viereckige und dreieckige Elemente festgestellt werden. Tanimoto-Koeffizienten von $T \approx 1$ bzw. $T = 1$ sprechen für eine präzise Implementierung in diesem ersten Verifizierungsfall.
+
+
+\subsubsection{Abweichung zur Referenzlösung homogener Halbraum}
+Darüber hinaus wird die Abweichung der Lösung mit der Referenzlösung des homogenen Halbraums untersucht. Dafür wird die Implementierung des ITM-Ansatzes homogener Halbraum herangezogen, wobei die gleiche Belastung an derselben Stelle aufgebracht wird. Um die Verschiebungen in der Tiefe $H = 8\ \mathrm{m}$ auszuwerten, wird in den homogenen Halbraum eine zusätzliche Bodenschicht mit den gleichen Materialparametern \texttt{stiff\_v01} eingefügt. Ein Systemdarstellung ist in der Abbildung (\ref{fig:c1_homog}) links zu finden.
+\begin{figure}[H]
+	\centering
+  \begin{subfigure}[t]{0.49\linewidth}
+	\centering
+	\raisebox{12mm}{% <-- hier die Höhe anpassen (z.B. 4–10mm)
+		\hspace*{9mm}% <-- nach rechts schieben
+		\makebox[\linewidth][c]{\includesvg[width=1.1\linewidth]{svg/verification_c1_system_hs}}
+	}
+\end{subfigure}\hfill
+	\begin{subfigure}{0.49\linewidth}
+		\centering
+		\includesvg[width=\linewidth]{svg/verification_c1_homog_svg_tex}
+	\end{subfigure}
+	\caption{Gewählte Systemparameter zur Verifikation mit dem homogenen Halbraum im ersten Fall - basiert auf \cite{Freisinger2022} - (links) und Abweichung $|\bar{u}_z(y)|$ der dreieckigen Elemente (\legThree) zu der Referenzlösung homogener Halbraum (\legFour) (rechts).}
+	\label{fig:c1_homog}
+\end{figure}
+\begin{table}[htb]
+	\centering
+	\normalsize
+	{\renewcommand{\arraystretch}{1.15}
+		\begin{tabular}{ccccc}
+			\firsthline
+			Maximaler Wert & Maximale Abweichung & Tanimoto Koeffizient $T$ \\\hline
+			$3,86\cdot10^{-10}$ & $1,21\cdot10^{-12}$ & 1,00 \\\lasthline
+	\end{tabular}}
+	\caption{Abweichungen $|\bar{u}_z(y)|$ zur Referenzlösung homogener Halbraum im ersten Verifizierungsfall.}
+	\label{tab:Fehlermessung_c1homog}
+\end{table}
+Die resultierenden Abweichungen der vertikalen Verschiebungen $|\bar{u}_z(y)|$ in der rechten Abbildung (\ref{fig:c1_homog}) zeigen, dass auch in diesem Fall die entwickelte Implementierung dreieckiger Elemente eine hohe Übereinstimmung mit der Referenzlösung aus dem homogenen Raum aufweist.
+Das lässt sich ebenfalls mithilfe des Tanimoto-Koeffizienten von $T = 1$ aus der Tabelle (\ref{tab:Fehlermessung_c1homog}) feststellen.
+
+Zusammenfassend lässt sich festhalten, dass die dreieckige Implementierung im ersten Verifizierungsfall eine sehr gute Approximation der Referenzlösungen von \cite{Freisinger2022} darstellt. 
+Insbesondere führt eine höhere Wahl der Knoten $N_{\varphi}$ auf der umlaufenden Zylinderkopplungsfläche $\Gamma$ aufgrund der feineren Diskretisierung zu einem präziseren Ergebnis.
+
+
+
+
+\section{Fall 2: Belastung innerhalb des FE-Bereichs}
+\label{sec:verification_c2}
+
+Der zweite Verifizierungsfall befasst sich mit den Auswirkungen infolge einer Belastung innerhalb des FE-Bereichs $\Omega$ bei unterschiedlicher Wahl der Materialparameter des Bodens.
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[t]{0.49\linewidth}
+		\centering
+		\includesvg[height=4.0cm]{svg/verification_c2_system_hs_cyl}
+	\end{subfigure}\hfill
+	\begin{subfigure}[t]{0.49\linewidth}
+		\centering
+		\includesvg[height=4.0cm]{svg/verification_c2_system_hs}
+	\end{subfigure}
+	\caption{Gewählte Systemparameter zur Verifikation mit viereckigen Elementen (links) und mit dem homogenen Halbraum (rechts) im zweiten Fall - basiert auf \cite{Freisinger2022}.}
+	\label{fig:c2_systeme}
+\end{figure}
+Analog zum ersten Verifizierungsfall in Kapitel (\ref{sec:verification_c1}) wird eine quadratische Belastung mit den Breiten $b_x = b_y = 2m$ und der Amplitude $1 \mathrm{N}/\mathrm{m}^{2}$ aufgebracht. Die Gesamtausdehnung des ITM-Teilsystems sowie die gewählten Stützstellen bleiben mit $B_x = B_y = 128\ \mathrm{m}$ und $N_x = N_y = 2^{9}$ unverändert.
+
+Die Belastung wird mittig im zylindrischen Hohlraum mit einem Radius von $R = 4\ \mathrm{m}$ in einer Tiefe von $H = 8\ \mathrm{m}$ aufgebracht. Eine Darstellung der gewählten Systemparameter ist in den Abbildungen (\ref{fig:c2_systeme}) gegeben.
+
+Aufgrund der erfolgten Analyse des Einflusses der Knoten $N_{\varphi}$ auf der umlaufenden Zylinderkopplungsfläche $\Gamma$ in Abschnitt (\ref{sec:verification_c1}) wird im Folgenden eine Analyse der vertikalen Verschiebungen für $N_{\varphi} = 64$ Knoten vorgenommen.
+
+In diesem Kapitel erfolgt die Analyse der vertikalen Verschiebungen im Vergleich zu den Referenzlösungen für die unterschiedlichen Materialparameter \texttt{soft\_v01} und \texttt{stiff\_v01}.
+
+
+\subsubsection{Abweichung zur Referenzlösung eines steiferen Materials}
+Zunächst werden die Materialparameter \texttt{stiff\_v01} herangezogen.
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{0.49\linewidth}
+		\centering
+		\includesvg[width=\linewidth]{svg/verification_c2_left_svg_tex}
+	\end{subfigure}\hfill
+	\begin{subfigure}{0.49\linewidth}
+		\centering
+		\includesvg[width=\linewidth]{svg/verification_c2_homog_svg_tex}
+	\end{subfigure}
+	\caption{Abweichung $|\bar{u}_z(y)|$ der dreieckigen Elemente (\legThree) zu den Referenzlösungen (\legFour) viereckiges FE-Netz (links) und homogener Halbraum (rechts) bei steiferen Materialparametern im zweiten Verifizierungsfall.}
+	\label{fig:c2}
+\end{figure}
+\begin{table}[htb]
+	\centering
+	\normalsize
+	{\renewcommand{\arraystretch}{1.15}
+		\begin{tabular}{ccccc}
+			\firsthline
+			Referenzlösung & Maximaler Wert & Maximale Abweichung & Tanimoto-Koeffizient $T$ \\\hline
+			FE-Netz & $ 3,39\cdot10^{-9}$ & $2,69\cdot10^{-11}$ & 1,00 \\
+			homogener Halbraum & $3,39\cdot10^{-9}$ & $1,03\cdot10^{-11}$ & 1,00 \\\lasthline
+	\end{tabular}}
+	\caption{Abweichungen $|\bar{u}_z(y)|$ bei steiferen Materialparametern im zweiten Verifizierungsfall.}
+	\label{tab:Fehlermessung_c2}
+\end{table}
+Aus den resultierenden Abweichungen der vertikalen Verschiebungen $|\bar{u}_z(y)|$ in den Abbildungen (\ref{fig:c2}) wird ersichtlich, dass die entwickelte Implementierung die herangezogenen Referenzlösungen infolge einer Belastung innerhalb des FE-Bereichs $\Omega$ präzise abbildet.
+
+Sowohl bei der im Vergleich zur Referenzlösung mit viereckigen Elementen als auch der des homogenen Halbraums werden Tanimoto-Koeffizienten von $T = 1,00$ erreicht. Die erfolgte Implementierung kann für die gewählten Materialparameter \texttt{stiff\_v01} demnach als sehr präzise bewertet werden.
+
+
+\subsubsection{Abweichung zur Referenzlösung eines weicheren Materials}
+Nach der Analyse des steiferen Bodens erfolgt nun die Betrachtung der weicheren Materialparameter \texttt{soft\_v01}.
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{0.49\linewidth}
+		\centering
+		\includesvg[width=\linewidth]{svg/verification_c2_left_soft_svg_tex}
+	\end{subfigure}\hfill
+	\begin{subfigure}{0.49\linewidth}
+		\centering
+		\includesvg[width=\linewidth]{svg/verification_c2_homog_soft_svg_tex}
+	\end{subfigure}
+	\caption{Abweichung $|\bar{u}_z(y)|$ der dreieckigen Elemente (\legThree) zu den Referenzlösungen (\legFour) viereckiges FE-Netz (links) und homogener Halbraum (rechts) bei weicheren Materialparametern im zweiten Verifizierungsfall.}
+	\label{fig:c2_soft}
+\end{figure}
+\begin{table}[htb]
+	\centering
+	\normalsize
+	{\renewcommand{\arraystretch}{1.15}
+		\begin{tabular}{ccccc}
+			\firsthline
+			Referenzlösung & Maximaler Wert & Maximale Abweichung & Tanimoto-Koeffizient $T$ \\\hline
+			FE-Netz & $ 2,05\cdot10^{-8}$ & $6,48\cdot10^{-10}$ & 0,99 \\
+			homogener Halbraum & $2,02\cdot10^{-8}$ & $4,24\cdot10^{-10}$ & 0,99 \\\lasthline
+	\end{tabular}}
+	\caption{Abweichungen $|\bar{u}_z(y)|$ bei weicheren Materialparametern im zweiten Verifizierungsfall.}
+	\label{tab:Fehlermessung_c2_soft}
+\end{table}
+Die resultierenden Abweichungen der vertikalen Verschiebungen $|\bar{u}_z(y)|$ in den Abbildungen (\ref{fig:c2_soft}) zeigen gute Approximation an die Referenzlösungen. Die in Tabelle (\ref{tab:Fehlermessung_c2_soft}) dargestellten maximalen Abweichungen und Tanimoto-Koeffizienten von $T = 0,99$ sprechen ebenfalls für diese Interpretation. 
+
+Größere Abweichungen im Vergleich zu den Ergebnissen der steiferen Materialparameter \texttt{stiff\_v01} sind jedoch erkennbar. Gerade im linken Graphen der Abbildungen (\ref{fig:c2_soft}) sind Abweichungen der vertikalen Verschiebungen $|\bar{u}_z(y)|$ am Scheitelpunkt erkennbar.
+Aufgrund der Tatsache, dass sich beide Analysen dieses Kapitels auf das selbe gewählte System (\ref{fig:c2_systeme}) beziehen und identisch diskretisiert wurden, lassen sich die festgestellten Abweichungen demnach auf die weicheren Materialparameter \texttt{soft\_v01} zurückführen.
+
+Diese größeren Abweichungen lassen sich durch die Verwendung einer gröberen Diskretisierung für die gewählten Parameter erklären. Gemäß \cite{Freisinger_Hackenberg2020} ist für eine präzise Approximation die Anzahl von acht bis zehn Elementen je Wellenlänge erforderlich. Aufgrund der definierten Gesamtausdehnung des ITM-Teilsystems zu $B_x = B_y = 128\ \mathrm{m}$ und $N_x = N_y = 2^{9}$ Stützstellen besitzen die Elemente eine Länge von $\mathrm{d}x = \mathrm{d}y = 0,25\ \mathrm{m}$. Die resultierenden Werte für die Wellenlänge der Rayleigh-Wellen $\lambda_r$ sind in der Tabelle (\ref{tab:Material_Parameter}) aufgeführt. Die Wellenlänge beträgt demnach $\lambda_r = 2,17\ \mathrm{m}$. Es liegen folglich für die weicheren Materialparameter acht Elemente je Rayleigh-Wellenlänge vor. 
+
+Im Vergleich beträgt die Rayleigh-Wellenlänge für die steiferen Materialparameter \texttt{stiff\_v01} $\lambda_r = 7,67\ \mathrm{m}$ was bei gleicher Diskretisierung zu dreißig Elementen pro Rayleigh-Wellenlänge führt. Für diesen steiferen Boden ist somit eine präzisere Approximation möglich.
+
+Um eine exaktere Approximation zu erreichen, ist es erforderlich, entweder ein steiferes Material zu verwenden, die Frequenz $f$ zu reduzieren oder eine feinere Diskretisierung zu implementieren. Diese Einflussfaktoren sind allerdings unabhängig von der entwickelten Implementierung dreieckiger, finiter Elemente.
+
+
+
+
+%Eine mögliche Erklärung für die beobachteten Abweichungen könnten die höheren Verschiebungen aufgrund der direkten Belatung im ausgewerteten FE-Bereich $\Omega$, sowie das weichere Bodenverhalten sein.
+%Die Approximation höherer Verschiebungen durch diskretisierte finite Elemente und deren Integration ist demnach wengier präzise. 
+%Im Rahmen der vorliegenden Arbeit wird auf diese Beobachtung und einer möglichen Erklärung jedoch nicht weiter eingegangen.
+
+Dennoch weisen die Graphen der Abbildungen (\ref{fig:c2_soft}) und die Werte der Tabelle (\ref{tab:Fehlermessung_c2_soft}) auf eine gute Approximation hin, sodass die entwickelte Implementierung die Referenzlösungen in guter Näherung beschreiben kann.
+
+Die in diesem Kapitel durchgeführten Verifizierungen zeigen, dass die Referenzlösungen von \cite{Freisinger2022} auch bei einer Belastung im FE-Bereich $\Omega$ gut angenähert werden können. 
+Eine gröbere Diskretisierung bei weicheren Böden kann zu größeren Abweichungen führen, wobei der Tanimoto-Koeffizient von $T = 0,99$ dennoch eine gute Annäherung darstellt.
+Der steifere Boden hingegen, weist exaktere Ergebnisse verglichen mit den Referenzlösnugen auf, wobei Tanimoto Koeffizienten von $T = 1,00$ erzielt werden konnten.
+
+
+
+
+
+\section{Fall 3: Graben mit Belastung auf der Halbraumoberfläche}
+\label{sec:verification_c3}
+
+In einem dritten Verifizierungsfall wird der Tunnelmittelpunkt auf die Halbraumoberfläche $\Lambda$ verschoben, sodass dieser zu einem offenen Graben wird. Dabei wird lediglich ein halber Zylinder als FE-Bereich $\Omega$ definiert, wie in den Abbildungen (\ref{fig:c3_systeme}) dargestellt.
+
+Zudem erfolgt der dritte Verifizierungsfall mit den den Materialparametern \texttt{stiff\_v01}.
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[t]{0.49\linewidth}
+		\centering
+		\includesvg[height=4.0cm]{svg/verification_c3_system_hs_cyl}
+	\end{subfigure}\hfill
+	\begin{subfigure}[t]{0.49\linewidth}
+		\centering
+		\includesvg[height=4.0cm]{svg/verification_c3_system_hs}
+	\end{subfigure}
+	\caption{Gewählte Systemparameter zur Verifikation mit viereckigen Elementen (links) und mit dem homogenen Halbraum (rechts) im dritten Fall - basiert auf \cite{Freisinger2022}.}
+	\label{fig:c3_systeme}
+\end{figure}
+Aufgrund des Sonderfalls werden die Systemparameter von den vorherigen Systemen abweichend gewählt.
+Der Radius wurde auf $R = 4\ \mathrm{m}$ gesetzt und der Zylindermittelpunkt in den Koordinatenursprung gelegt. Da es sich um einen halben Zylinder an der Oberfläche handelt, liegt der Zylindermittelpunkt auf der Halbraumoberfläche $\Lambda$ bei $z = 0\ \mathrm{m}$.
+Des weiteren wird die Gesamtausdehnung des ITM-Teilsystems sowie die gewählten Stützstellen erneut zu $B_x = B_y = 128\ \mathrm{m}$ und $N_x = N_y = 2^{9}$ gewählt.
+Zudem wird eine Anzahl von $N_{\varphi} = 64$ umlaufenden Knoten auf der Zylinderkopplungsfläche $\Gamma$ definiert.
+
+Die Belastung wurde in diesem Verifizierungsfall auf die Halbraumoberfläche $\Lambda$ aufgebracht, deren Breite $b_x = b_y = 2\ \mathrm{m}$ und deren Amplitude $1 \mathrm{N}/\mathrm{m}^{2}$ beträgt. Die Belastung wurde $y_L = 6\ \mathrm{m}$ vom Koordinatenursprung entfernt aufgebracht, sodass die quadratische Belastung vollständig auf der Halbraumoberfläche $\Lambda$ verortet ist. 
+
+
+Da der Zylindermittelpunkt an der Halbraumoberfläche $\Lambda$ liegt, werden in den Abbildungen (\ref{fig:c3}) die vertikalen Verschiebungen $|u_z(y)|$ bei $z = 0\ \mathrm{m}$ betrachtet.
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{0.49\linewidth}
+		\centering
+		\includesvg[width=\linewidth]{svg/verification_c3_left_svg_tex}
+	\end{subfigure}\hfill
+	\begin{subfigure}{0.49\linewidth}
+		\centering
+		\includesvg[width=\linewidth]{svg/verification_c3_homog_svg_tex}
+	\end{subfigure}
+	\caption{Abweichung $|\bar{u}_z(y)|$ der dreieckigen Elemente (\legThree) zu den Referenzlösungen (\legFour) viereckiges FE-Netz (links) und homogener Halbraum (rechts) im dritten Verifizierungsfall.}
+	\label{fig:c3}
+\end{figure}
+\begin{table}[htb]
+	\centering
+	\normalsize
+	{\renewcommand{\arraystretch}{1.15}
+		\begin{tabular}{ccccc}
+			\firsthline
+			Referenzlösung & Maximaler Wert & Maximale Abweichung & Tanimoto-Koeffizient $T$ \\\hline
+			FE-Netz & $ 1,71\cdot10^{-9}$ & $1,30\cdot10^{-11}$ & 0,99 \\
+			homogener Halbraum & $1,72\cdot10^{-9}$ & $1,10\cdot10^{-11}$ & 0,99 \\\lasthline
+	\end{tabular}}
+	\caption{Abweichugnsmessung von $|\bar{u}_z(y)|$ im dritten Verifizierungsfall.}
+	\label{tab:Fehlermessung_c3}
+\end{table}
+Die resultierenden Abweichungen der vertikalen Verschiebungen $|\bar{u}_z(y)|$ in den Abbildungen (\ref{fig:c3}) zeigen gute Approximationen an die Referenzlösungen. Die in Tabelle (\ref{tab:Fehlermessung_c3}) spiegeln diese Interpretation ebenfalls wider, da sowohl die maximalen Abweichungen als auch die Tanimoto-Koeffizienten von $T = 0,99$ für eine gute Näherung an die Referenzlösungen sprechen.
+
+%Die in Graph (\ref{fig:c3_a}) dargestellten Verläufe der vertikalen Verschiebung $|\bar{u}_z(y)|$ der FE-Referenzlösung sowie der entwickelten Lösungen zeigen, dass die trianguläre Implementierung auch im Sonderfall des offenen Grabens eine sehr gute Approximation aufweist.
+%Das spiegelt sich in den Werten der Tabelle (\ref{tab:Fehlermessung_c3}) wider, da gegenüber der FE-Referenzlösung ein Tanimoto Koeffizient von $T = 0,99$ die gute Approximation unterstreicht. 
+
+%Ein ebenso positives Fazit lässt sich im Vergleich zur homogenen Referenzlösung im Graph (\ref{fig:c3_b}) erkennen, da sich auch hier die entwickelte Lösung ebenfalls mit der Referenzlösung deckt. Diese Aussage wird durch den Tanimoto Koeffizient $T = 0,99$ bestätigt.
+
+Die in diesem Kapitel durchgeführte Verifizierung zeigt, dass die Referenzlösungen von \cite{Freisinger2022} auch für den Sonderfall eines Grabens mit Belastung auf der Halbraumoberfläche $\Lambda$ gut angenähert werden können. Die entwickelte Implementation dreieckiger, finiter Elemente ist somit auch im dritten Verifizierungsfall als präzise zu bewerten.
+
+
+
+
+
+
+
+
+
+
+
